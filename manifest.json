@@ -1,0 +1,11 @@
+{
+    "name": "Pinyin Generator",
+    "version": "1.0",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": ["https://mp.weixin.qq.com/*"],
+            "js": ["content.js"]
+        }
+    ]
+}
