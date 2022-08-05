@@ -4,7 +4,7 @@ const XLSX = require("xlsx");
 const workbook = XLSX.readFile("5000-common-characters.xlsx");
 
 // Select sheet
-const worksheet = workbook.Sheets["1-5000"];
+const worksheet = workbook.Sheets["All Characters"];
 
 // Sheet to JSON
 const characters = XLSX.utils.sheet_to_json(worksheet);
@@ -18,4 +18,17 @@ const characters = XLSX.utils.sheet_to_json(worksheet);
 // // Sheet to JSON
 // const characters = XLSX.utils.sheet_to_json(worksheet);
 
-console.log(characters[0]["501 "]);
+// chrome.runtime.onMessage.addListener(receiver);
+
+var selectedCharacter = "了";
+
+var index = characters.findIndex(item => item.Character === selectedCharacter);
+const pinyin = characters[index]["Pinyin"];
+console.log(pinyin);
+
+// function receiver(request, sender, sendResponse) {
+//     var word = request.text;
+//     var index = characters.findIndex(item => item.Character === word);
+//     const pinyin = characters[index]["Pinyin"];
+//     console.log(pinyin);
+// }
