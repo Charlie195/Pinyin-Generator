@@ -9,6 +9,9 @@
         }
     ],
     "background": {
-        "scripts": ["background.js"]
+        "scripts": [
+            "character-source.js",
+            "background.js"
+        ]
     }
 }

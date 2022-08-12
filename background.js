@@ -1,34 +1,26 @@
-const XLSX = require("xlsx");
+// execute receiver function when message from content.js is received
+chrome.runtime.onMessage.addListener(receiver);
 
-// Select workbook
-const workbook = XLSX.readFile("5000-common-characters.xlsx");
+// global selectedCharacter
+window.selectedCharacter = "";
 
-// Select sheet
-const worksheet = workbook.Sheets["All Characters"];
+function receiver(request, sender, sendResponse) {
+    // set selectedCharacter
+    window.selectedCharacter = request.text;
 
-// Sheet to JSON
-const characters = XLSX.utils.sheet_to_json(worksheet);
+    // find the pinyin for the selectedCharacter
+    findPinyin(window.selectedCharacter);
+}
 
-// // Select workbook
-// const workbook = XLSX.readFile("Testing Extension.xlsx");
+function findPinyin(character) {
+    // find index of selectedCharacter in data source
+    var index = characterSource.findIndex(item => item.Character === character);
 
-// // Select sheet
-// const worksheet = workbook.Sheets["Sheet1"];
-
-// // Sheet to JSON
-// const characters = XLSX.utils.sheet_to_json(worksheet);
-
-// chrome.runtime.onMessage.addListener(receiver);
-
-var selectedCharacter = "了";
-
-var index = characters.findIndex(item => item.Character === selectedCharacter);
-const pinyin = characters[index]["Pinyin"];
-console.log(pinyin);
-
-// function receiver(request, sender, sendResponse) {
-//     var word = request.text;
-//     var index = characters.findIndex(item => item.Character === word);
-//     const pinyin = characters[index]["Pinyin"];
-//     console.log(pinyin);
-// }
+    // find and output corresponding pinyin
+    try {
+        const pinyin = characterSource[index]["Pinyin"];
+        console.log(pinyin);
+    } catch(err) {
+        console.log("There is no pinyin for: " + character);
+    }
+}
