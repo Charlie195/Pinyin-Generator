@@ -19,8 +19,12 @@ function findPinyin(character) {
     // find and output corresponding pinyin
     try {
         const pinyin = characterSource[index]["Pinyin"];
-        console.log(pinyin);
+        chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id, {text: pinyin});
+        });
     } catch(err) {
-        console.log("There is no pinyin for: " + character);
+        chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id, {text: character});
+        });
     }
 }
