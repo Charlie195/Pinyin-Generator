@@ -8,6 +8,10 @@ console.log("button should be loaded");
 transliterateBtn.onclick = receiveText;
 
 var title;
+var transliteratedPinyin = "";
+
+// Listener to receive the background.js message with pinyin
+chrome.runtime.onMessage.addListener(receivedPinyinMsg);
 
 function receiveText() {
     // Title
@@ -17,6 +21,8 @@ function receiveText() {
     for (var i = 0; i < title.length; i++) {
         transliterate(title[i]);
     }
+
+    displayPinyin(transliteratedPinyin);
 }
 
 function transliterate(character) {
@@ -26,4 +32,13 @@ function transliterate(character) {
     };
 
     chrome.runtime.sendMessage(message);
+}
+
+// Receiving the pinyin message as an event object
+function receivedPinyinMsg(request) {
+    transliteratedPinyin += request.text + " "; // Setting keywords as favTeams from popup.js
+}
+
+function displayPinyin(displayText) {
+    console.log(displayText);
 }
