@@ -14,6 +14,10 @@ var origTextElement;
 // String to store transliterated pinyin
 var transliteratedPinyin = "";
 
+if (localStorage.getItem("extension started") == true && !initiated) { // Local storage doesn't store actual booleans but rather strings
+    initTranslation();
+}
+
 function receiveExtensionStateMsg(extensionStateMsg) {
     if (extensionStateMsg["id"] == "extensionStateMsg") {
         if (extensionStateMsg["started"]) {
@@ -21,13 +25,11 @@ function receiveExtensionStateMsg(extensionStateMsg) {
             if (!initiated) {
                 console.log("here");
                 initTranslation();
-                initiated = true;
             }
         }
         else {
             localStorage.setItem("extension started", false);
             endTranslation();
-            initiated = false;
         }
     }
 }
@@ -80,6 +82,8 @@ function initTranslation() {
     function displayPinyin() {
         origTextElement.innerHTML += "<br>" + transliteratedPinyin;
     }
+
+    initiated = true;
 }
 
 function endTranslation() {
@@ -90,4 +94,6 @@ function endTranslation() {
     if (origTextElement) { // Delete the last displayed transliteration
         origTextElement.innerHTML = origTextElement.innerHTML.replace(`<br>${transliteratedPinyin}`, ""); // We need to set the innerHTML to the changed value
     }
+
+    initiated = false;
 }
