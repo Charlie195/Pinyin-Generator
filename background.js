@@ -1,10 +1,10 @@
 // execute receiver function when message from content.js is received
-chrome.runtime.onMessage.addListener(receivedCharacterMsg);
+chrome.runtime.onMessage.addListener(receiveCharacterMsg);
 
 // global selectedCharacter
 window.selectedCharacter = "";
 
-function receivedCharacterMsg(request, sender, sendResponse) {
+function receiveCharacterMsg(request, sender, sendResponse) {
     // set selectedCharacter
     window.selectedCharacter = request.text;
 
