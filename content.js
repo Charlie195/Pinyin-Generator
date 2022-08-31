@@ -1,35 +1,39 @@
-// Setting up transliterate button
-const transliterateBtn = document.createElement("button");
-transliterateBtn.innerHTML = "TRANSLITERATE";
-document.getElementById("meta_content").appendChild(transliterateBtn);
-console.log("button should be loaded");
+// Execute receiveText when mouse is released
+window.addEventListener("mouseup", receiveText);
 
-// Execute receiveText when transliterate button is clicked
-transliterateBtn.onclick = receiveText;
-
-var title;
+// String to store transliterated pinyin
 var transliteratedPinyin = "";
+
+// Original element of the text on the page
+var origTextElement;
+
+var displayElement;
 
 // Listener to receive the background.js message with pinyin
 chrome.runtime.onMessage.addListener(receivedPinyinMsg);
 
-function receiveText() {
-    // Title
-    title = document.getElementById("activity-name").innerHTML;
-
-    // Transliterate through each character
-    for (var i = 0; i < title.length; i++) {
-        transliterate(title[i], i == title.length - 1);
+function receiveText(eventObj) {
+    // Getting highlighted text before possible DOM modifications that would unhighlight the text
+    var selectedText = window.getSelection().toString();
+    
+    if (origTextElement) { // Delete the previous displayed transliteration if there is one
+        origTextElement.innerHTML = origTextElement.innerHTML.replace(`<br>${transliteratedPinyin}`, ""); // We need to set the innerHTML to the changed value
     }
 
-    displayPinyin(transliteratedPinyin);
+    transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
+    origTextElement = eventObj.target;
+
+    // Transliterate through each character of highlighted text
+    for (var i = 0; i < selectedText.length; i++) {
+        transliterate(selectedText[i], i == selectedText.length - 1);
+    }
 }
 
 function transliterate(character, process) {
-    // send text as message object to background.js
+    // Send text as message object to background.js
     let message = {
         text: character,
-        finishedTransliteration: process
+        finishedTransliteration: process // Identifying if there are more characters to transliterate
     };
 
     chrome.runtime.sendMessage(message);
@@ -39,11 +43,12 @@ function transliterate(character, process) {
 function receivedPinyinMsg(request) {
     transliteratedPinyin += request.text + " "; // Setting keywords as favTeams from popup.js
 
-    if (request.finishedTransliteration) {
-        displayPinyin(transliteratedPinyin);
+    if (request.finishedTransliteration) { // Display the pinyin when all characters have been transliterated
+        displayPinyin();
     }
 }
 
-function displayPinyin(displayText) {
-    console.log(displayText);
+function displayPinyin() {
+    console.log(transliteratedPinyin);
+    origTextElement.innerHTML += "<br>" + transliteratedPinyin;
 }

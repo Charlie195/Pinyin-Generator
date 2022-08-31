@@ -21,7 +21,7 @@ function findPinyin(character, finished) {
     try {
         const pinyin = characterSource[index]["Pinyin"];
         chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-            chrome.tabs.sendMessage(tabs[0].id, {text: pinyin});
+            chrome.tabs.sendMessage(tabs[0].id, {text: pinyin, finishedTransliteration: finished});
         });
     } catch(err) {
         chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
