@@ -23,7 +23,6 @@ function receiveExtensionStateMsg(extensionStateMsg) {
         if (extensionStateMsg["started"]) {
             localStorage.setItem("extension started", true);
             if (!initiated) {
-                console.log("here");
                 initTranslation();
             }
         }
