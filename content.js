@@ -1,28 +1,36 @@
 // Listener to receive the popup.js message with extension state
 chrome.runtime.onMessage.addListener(receiveExtensionStateMsg);
 
+// Variable to ensure the initTranslation isn't executed multiple times over
+var initiated;
+
+// Global variable to store the function reference
+var receiveTextMsg;
+
+// Original element of the text on the page
+var origTextElement;
+
+// String to store transliterated pinyin
+var transliteratedPinyin = "";
+
 function receiveExtensionStateMsg(extensionStateMsg) {
-    if (extensionStateMsg["started"]) {
-        initTranslation();
+    if (extensionStateMsg["id"] == "extensionStateMsg") {
+        if (extensionStateMsg["started"]) {
+            localStorage.setItem("extension started", true);
+            if (!initiated) {
+                initTranslation();
+                initiated = true;
+            }
+        }
+        else {
+            localStorage.setItem("extension started", false);
+            endTranslation();
+        }
     }
 }
 
 function initTranslation() {
-    // Execute receiveText when mouse is released
-    window.addEventListener("mouseup", receiveTextMsg);
-
-    // String to store transliterated pinyin
-    var transliteratedPinyin = "";
-
-    // Original element of the text on the page
-    var origTextElement;
-
-    var displayElement;
-
-    // Listener to receive the background.js message with pinyin
-    chrome.runtime.onMessage.addListener(receivePinyinMsg);
-
-    function receiveTextMsg(eventObj) {
+    receiveTextMsg = (eventObj) => {
         // Getting highlighted text before possible DOM modifications that would unhighlight the text
         var selectedText = window.getSelection().toString();
         
@@ -39,11 +47,17 @@ function initTranslation() {
         }
     }
 
+    // Execute receiveText when mouse is released
+    window.addEventListener("mouseup", receiveTextMsg);
+
+    // Listener to receive the background.js message with pinyin
+    chrome.runtime.onMessage.addListener(receivePinyinMsg);
+
     function transliterate(character, process) {
         // Send text as message object to background.js
         let message = {
-            text: character,
-            finishedTransliteration: process // Identifying if there are more characters to transliterate
+            "text": character,
+            "finishedTransliteration": process // Identifying if there are more characters to transliterate
         };
 
         chrome.runtime.sendMessage(message);
@@ -51,15 +65,25 @@ function initTranslation() {
 
     // Receiving the pinyin message as an event object
     function receivePinyinMsg(request) {
-        transliteratedPinyin += request.text + " "; // Setting keywords as favTeams from popup.js
+        if (request["id"] == "pinyinMsg") {
+            console.log("dang");
+            transliteratedPinyin += request["text"] + " "; // Setting keywords as favTeams from popup.js
 
-        if (request.finishedTransliteration) { // Display the pinyin when all characters have been transliterated
-            displayPinyin();
+            if (request["finishedTransliteration"]) { // Display the pinyin when all characters have been transliterated
+                displayPinyin();
+            }
         }
     }
 
     function displayPinyin() {
-        console.log(transliteratedPinyin);
         origTextElement.innerHTML += "<br>" + transliteratedPinyin;
+    }
+}
+
+function endTranslation() {
+    window.removeEventListener("mouseup", receiveTextMsg);
+
+    if (origTextElement) { // Delete the last displayed transliteration
+        origTextElement.innerHTML = origTextElement.innerHTML.replace(`<br>${transliteratedPinyin}`, ""); // We need to set the innerHTML to the changed value
     }
 }
