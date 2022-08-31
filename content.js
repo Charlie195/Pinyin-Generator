@@ -6,6 +6,7 @@ var initiated;
 
 // Global variable to store the function reference
 var receiveTextMsg;
+var receivePinyinMsg;
 
 // Original element of the text on the page
 var origTextElement;
@@ -18,6 +19,7 @@ function receiveExtensionStateMsg(extensionStateMsg) {
         if (extensionStateMsg["started"]) {
             localStorage.setItem("extension started", true);
             if (!initiated) {
+                console.log("here");
                 initTranslation();
                 initiated = true;
             }
@@ -25,6 +27,7 @@ function receiveExtensionStateMsg(extensionStateMsg) {
         else {
             localStorage.setItem("extension started", false);
             endTranslation();
+            initiated = false;
         }
     }
 }
@@ -47,6 +50,17 @@ function initTranslation() {
         }
     }
 
+    // Receiving the pinyin message as an event object
+    receivePinyinMsg = (request) => {
+        if (request["id"] == "pinyinMsg") {
+            transliteratedPinyin += request["text"] + " "; // Setting keywords as favTeams from popup.js
+
+            if (request["finishedTransliteration"]) { // Send the pinyin to the popup to display when all characters have been transliterated
+                displayPinyin();
+            }
+        }
+    }
+
     // Execute receiveText when mouse is released
     window.addEventListener("mouseup", receiveTextMsg);
 
@@ -63,18 +77,6 @@ function initTranslation() {
         chrome.runtime.sendMessage(message);
     }
 
-    // Receiving the pinyin message as an event object
-    function receivePinyinMsg(request) {
-        if (request["id"] == "pinyinMsg") {
-            console.log("dang");
-            transliteratedPinyin += request["text"] + " "; // Setting keywords as favTeams from popup.js
-
-            if (request["finishedTransliteration"]) { // Display the pinyin when all characters have been transliterated
-                displayPinyin();
-            }
-        }
-    }
-
     function displayPinyin() {
         origTextElement.innerHTML += "<br>" + transliteratedPinyin;
     }
@@ -82,6 +84,8 @@ function initTranslation() {
 
 function endTranslation() {
     window.removeEventListener("mouseup", receiveTextMsg);
+
+    chrome.runtime.onMessage.removeListener(receivePinyinMsg);
 
     if (origTextElement) { // Delete the last displayed transliteration
         origTextElement.innerHTML = origTextElement.innerHTML.replace(`<br>${transliteratedPinyin}`, ""); // We need to set the innerHTML to the changed value
