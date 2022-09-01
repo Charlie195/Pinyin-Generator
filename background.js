@@ -1,25 +1,25 @@
-// execute receiver function when message from content.js is received
+// Execute receiver function when message from content.js is received
 chrome.runtime.onMessage.addListener(receiveCharacterMsg);
 
-// global selectedCharacter
+// Global selectedCharacter
 window.selectedCharacter = "";
 
 function receiveCharacterMsg(characterMsg, sender, sendResponse) {
-    if (characterMsg["id"] == "characterMsg") {
-        // set selectedCharacter
+    if (characterMsg["id"] == "characterMsg") { // Ensuring sender and receiver match
+        // Set selectedCharacter
         window.selectedCharacter = characterMsg["text"];
 
         console.log(selectedCharacter);
-        // find the pinyin for the selectedCharacter
+        // Find the pinyin for the selectedCharacter
         findPinyin(window.selectedCharacter, characterMsg["finishedTransliteration"]);
     }
 }
 
 function findPinyin(character, finished) {
-    // find index of selectedCharacter in data source
+    // Find index of selectedCharacter in data source
     var index = characterSource.findIndex(item => item.Character === character);
 
-    // find and output corresponding pinyin
+    // Find and return corresponding pinyin to content.js
     try {
         const pinyin = characterSource[index]["Pinyin"];
         chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
