@@ -3,11 +3,13 @@
     "version": "1.0",
     "manifest_version": 2,
     "permissions": [
-        "storage"
+        "storage",
+        "tabs"
     ],
     "content_scripts": [
         {
             "matches": ["https://mp.weixin.qq.com/*"],
+            "css": ["extensionWindow.css"],
             "js": ["content.js"]
         }
     ],
