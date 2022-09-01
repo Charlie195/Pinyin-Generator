@@ -14,7 +14,7 @@ var origTextElement;
 // String to store transliterated pinyin
 var transliteratedPinyin = "";
 
-if (localStorage.getItem("extension started") == true && !initiated) { // Local storage doesn't store actual booleans but rather strings
+if (localStorage.getItem("extension started") == "true" && !initiated) { // Local storage doesn't store actual booleans but rather strings
     initTranslation();
 }
 
