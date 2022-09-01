@@ -4,13 +4,15 @@ chrome.runtime.onMessage.addListener(receiveCharacterMsg);
 // global selectedCharacter
 window.selectedCharacter = "";
 
-function receiveCharacterMsg(request, sender, sendResponse) {
-    // set selectedCharacter
-    window.selectedCharacter = request.text;
+function receiveCharacterMsg(characterMsg, sender, sendResponse) {
+    if (characterMsg["id"] == "characterMsg") {
+        // set selectedCharacter
+        window.selectedCharacter = characterMsg["text"];
 
-    console.log(selectedCharacter);
-    // find the pinyin for the selectedCharacter
-    findPinyin(window.selectedCharacter, request.finishedTransliteration);
+        console.log(selectedCharacter);
+        // find the pinyin for the selectedCharacter
+        findPinyin(window.selectedCharacter, characterMsg["finishedTransliteration"]);
+    }
 }
 
 function findPinyin(character, finished) {
