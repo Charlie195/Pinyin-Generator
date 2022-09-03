@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
+
+button {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: bold;
+    font-size: 1.25rem;
+    z-index: 1;
+    border: 3px solid;
+    transition: color 300ms ease-in-out;
+    color: #112A46;
+    background-color: #ACC8E5;
+    border-radius: 5px;
+}
+
+button:hover,
+button:focus {
+    color: #FFF;
+    border: 3px solid #42FBF2;
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    background-color: #25252A;
+
+    transition: transform 300ms ease-in-out;
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+button:hover::before,
+button:focus::before {
+    transform: scaleX(1);
+}
+
+#activateBtn {
+    padding: 0.5rem;
+    left: 10px; 
+    top: 5px;
+    position: fixed;
+}
+
+#deactivateBtn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display:inline;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+#extensionWindowDiv {
+    font-family: "Source Sans Pro", sans-serif;
+    z-index: 9;
+    border: 3px solid #112A46;
+    text-align: center;
+    width: 40ch;
+    border-radius: 0.5625rem;
+    position: fixed;
+}
+
+#draggableHeader {
+    padding: 0.75rem;
+    cursor: move;
+    z-index: 10;
+    color: #ACC8E5;
+    background-color: #112A46;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    position: relative;
+}
+
+#draggableHeader h1 {
+    font-weight: bold;
+    display:inline;
+    font-size: 1.25rem;
+}
+
+.extensionBody {
+    color: #112A46;
+    background-color: #ACC8E5;
+    padding: 0.75rem;
+}
+
+.extensionBody h2 {
+    margin: 0;
+    padding: 0rem 0.5rem 1rem;
+    font-weight: 600;
+}
+
+.extensionBody p {
+    background-color: bisque;
+    color: rgb(94, 47, 13);
+    font-weight: bold;
+    font-size: 1.25rem;
+    border-radius: 5px;
+}
