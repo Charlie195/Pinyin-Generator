@@ -2,18 +2,13 @@
 window.onload = init;
 
 function init() {
+    const container = document.querySelector("html");
+
     // Setting up activate button
     const activateBtn = document.createElement("button");
     activateBtn.setAttribute("id", "activateBtn");
     activateBtn.innerHTML = "TRANSLITERATE";
-    document.getElementById("meta_content").appendChild(activateBtn);
-
-    // Setting up deactivate button but keeping it hidden
-    const deactivateBtn = document.createElement("button");
-    deactivateBtn.setAttribute("id", "deactivateBtn");
-    deactivateBtn.innerHTML = "DEACTIVATE";
-    document.getElementById("meta_content").appendChild(deactivateBtn);
-    deactivateBtn.hidden = true;
+    container.insertBefore(activateBtn, document.body);
 
     // Global variable to store the function reference
     var receiveText;
@@ -26,19 +21,29 @@ function init() {
     var extensionWindow = document.createElement("div");
     extensionWindow.setAttribute("id", "extensionWindowDiv");
     extensionWindow.innerHTML = `
-        <div id="draggableHeader">Drag to Move</div>
-        <h2>Pinyin Transliteration</h2>
-        <p>Here's your transliteration:</p>
-        <p></p>
+        <div id="draggableHeader">
+            <h1>Drag to Move</h1>
+        </div>
+        <div class="extensionBody">
+            <h2>Highlight the Chinese characters that you want to transliterate</h2>
+            <h2>Here's your transliteration:</h2>
+            <p></p>
+        </div>
     `;
 
+    // Setting up deactivate button on the extension window but keeping it hidden
+    const deactivateBtn = document.createElement("button");
+    deactivateBtn.setAttribute("id", "deactivateBtn");
+    deactivateBtn.innerHTML = "X";
+    extensionWindow.querySelector("div").appendChild(deactivateBtn);
+    deactivateBtn.hidden = true;
+
     // Adding top the top of the page, but keeping the extension window hidden
-    var container = document.querySelector("html");
     container.insertBefore(extensionWindow, container.firstChild);
     extensionWindow.hidden = true;
 
     // Global variable for the element to display the transliteration in the extension window
-    var displayElement = document.getElementById("extensionWindowDiv").querySelectorAll("p")[1];
+    var displayElement = document.getElementById("extensionWindowDiv").querySelector("p");
 
     // Injecting css for extension window
     var cssElement = document.createElement("link");
@@ -110,13 +115,38 @@ function init() {
             }
         }
 
+        // Storing previous character states to format spaces properly
+        var prevWasPinyin;
+        var prevWasPunc;
+
         // Receiving the pinyin message
         receivePinyinMsg = (pinyinMsg) => {
             if (pinyinMsg["id"] == "pinyinMsg") { // Checking if the message is for this receiver
-                transliteratedPinyin += pinyinMsg["text"] + " "; // Storing each transliterated pinyin to the storage variable
+                // Adding space between pinyins and non-puncuations
+                if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+                    transliteratedPinyin += " ";
+                }
+                
+                // Adding space between pinyins but not between pinyins and punctuation
+                if (pinyinMsg["isPinyin"] && !prevWasPunc) {
+                    transliteratedPinyin += " ";
+                    prevWasPinyin = true;
+                }
+                else {
+                    prevWasPinyin = false;
+                }
+
+                // Identifying if this character is a punctuation for the next character
+                prevWasPunc = false;
+                if (pinyinMsg["text"].match(/\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+                    prevWasPunc = true;
+                }
+
+                transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
 
                 if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
                     displayPinyin();
+                    prevWasPinyin = false;
                 }
             }
         }
