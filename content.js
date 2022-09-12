@@ -7,6 +7,7 @@ function init() {
     // Setting up activate button
     const activateBtn = document.createElement("button");
     activateBtn.setAttribute("id", "activateBtn");
+    activateBtn.setAttribute("class", "extensionBtn");
     activateBtn.innerHTML = "TRANSLITERATE";
     container.insertBefore(activateBtn, document.body);
 
@@ -19,9 +20,9 @@ function init() {
 
     // Setting up the extension window
     var extensionWindow = document.createElement("div");
-    extensionWindow.setAttribute("id", "extensionWindowDiv");
+    extensionWindow.setAttribute("class", "extensionWindowDiv");
     extensionWindow.innerHTML = `
-        <div id="draggableHeader">
+        <div class="draggableHeader">
             <h1>Drag to Move</h1>
         </div>
         <div class="extensionBody">
@@ -34,6 +35,7 @@ function init() {
     // Setting up deactivate button on the extension window but keeping it hidden
     const deactivateBtn = document.createElement("button");
     deactivateBtn.setAttribute("id", "deactivateBtn");
+    deactivateBtn.setAttribute("class", "extensionBtn");
     deactivateBtn.innerHTML = "X";
     extensionWindow.querySelector("div").appendChild(deactivateBtn);
     deactivateBtn.hidden = true;
@@ -43,7 +45,7 @@ function init() {
     extensionWindow.hidden = true;
 
     // Global variable for the element to display the transliteration in the extension window
-    var displayElement = document.getElementById("extensionWindowDiv").querySelector("p");
+    var displayElement = document.getElementsByClassName("extensionWindowDiv")[0].querySelector("p");
 
     // Injecting css for extension window
     var cssElement = document.createElement("link");
@@ -52,13 +54,13 @@ function init() {
     document.querySelector("html").appendChild(cssElement);
 
     // Making extension window draggable:
-    dragElement(document.getElementById("extensionWindowDiv"));
+    dragElement(document.getElementsByClassName("extensionWindowDiv")[0]);
 
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (document.getElementById("draggableHeader")) {
+        if (document.getElementsByClassName("draggableHeader")[0]) {
             // Ff present, the header is where you move the DIV from:
-            document.getElementById("draggableHeader").onmousedown = dragMouseDown;
+            document.getElementsByClassName("draggableHeader")[0].onmousedown = dragMouseDown;
         } else {
             // Otherwise, move the DIV from anywhere inside the DIV:
             elmnt.onmousedown = dragMouseDown;

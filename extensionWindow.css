@@ -1,10 +1,16 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-button {
+#activateBtn, .extensionWindowDiv * {
     font-family: "Source Sans Pro", sans-serif;
+    line-height: 2rem;
+    padding: 0;
+    margin: 0;
+}
+
+.extensionBtn {
     font-weight: bold;
     font-size: 1.25rem;
-    z-index: 1;
+    z-index: 1000;
     border: 3px solid;
     transition: color 300ms ease-in-out;
     color: #112A46;
@@ -12,13 +18,13 @@ button {
     border-radius: 5px;
 }
 
-button:hover,
+.extensionBtn:hover,
 button:focus {
     color: #FFF;
     border: 3px solid #42FBF2;
 }
 
-button::before {
+.extensionBtn::before {
     content: "";
     position: absolute;
     top: 0;
@@ -33,8 +39,8 @@ button::before {
     transform-origin: left;
 }
 
-button:hover::before,
-button:focus::before {
+.extensionBtn:hover::before,
+.extensionBtn:focus::before {
     transform: scaleX(1);
 }
 
@@ -54,9 +60,9 @@ button:focus::before {
     right: 5px;
 }
 
-#extensionWindowDiv {
+.extensionWindowDiv {
     font-family: "Source Sans Pro", sans-serif;
-    z-index: 9;
+    z-index: 1000;
     border: 3px solid #112A46;
     text-align: center;
     width: 40ch;
@@ -64,10 +70,10 @@ button:focus::before {
     position: fixed;
 }
 
-#draggableHeader {
+.draggableHeader {
     padding: 0.75rem;
     cursor: move;
-    z-index: 10;
+    z-index: 1001;
     color: #ACC8E5;
     background-color: #112A46;
     border-top-left-radius: 4px;
@@ -75,22 +81,24 @@ button:focus::before {
     position: relative;
 }
 
-#draggableHeader h1 {
+.draggableHeader h1 {
     font-weight: bold;
+    color: #ACC8E5;
     display:inline;
     font-size: 1.25rem;
 }
 
 .extensionBody {
-    color: #112A46;
     background-color: #ACC8E5;
     padding: 0.75rem;
 }
 
 .extensionBody h2 {
+    color: #112A46;
     margin: 0;
     padding: 0rem 0.5rem 1rem;
     font-weight: 600;
+    font-size: 1rem;
 }
 
 .extensionBody p {
