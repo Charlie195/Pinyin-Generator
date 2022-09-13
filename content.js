@@ -2,14 +2,19 @@
 window.onload = init;
 
 function init() {
+    // Setting sessionStorage for activated/deactivated state to default if uninitialized
+    if (sessionStorage.getItem("extension state") == null) {
+        sessionStorage.setItem("extension state", "activated")
+    }
+    
     const container = document.querySelector("html");
 
-    // Setting up activate button
-    const activateBtn = document.createElement("button");
-    activateBtn.setAttribute("id", "activateBtn");
-    activateBtn.setAttribute("class", "extensionBtn");
-    activateBtn.innerHTML = "TRANSLITERATE";
-    container.insertBefore(activateBtn, document.body);
+    // Setting up open button
+    const openBtn = document.createElement("button");
+    openBtn.setAttribute("id", "openBtn");
+    openBtn.setAttribute("class", "extensionBtn");
+    openBtn.innerHTML = "TRANSLITERATE";
+    container.insertBefore(openBtn, document.body);
 
     // Global variable to store the function reference
     var receiveText;
@@ -29,16 +34,17 @@ function init() {
             <h2>Highlight the Chinese characters that you want to transliterate</h2>
             <h2>Here's your transliteration:</h2>
             <p></p>
+            <h4>To activate/deactivate the extension, click on the extension icon</h4>
         </div>
     `;
 
-    // Setting up deactivate button on the extension window but keeping it hidden
-    const deactivateBtn = document.createElement("button");
-    deactivateBtn.setAttribute("id", "deactivateBtn");
-    deactivateBtn.setAttribute("class", "extensionBtn");
-    deactivateBtn.innerHTML = "X";
-    extensionWindow.querySelector("div").appendChild(deactivateBtn);
-    deactivateBtn.hidden = true;
+    // Setting up close button on the extension window but keeping it hidden
+    const closeBtn = document.createElement("button");
+    closeBtn.setAttribute("id", "closeBtn");
+    closeBtn.setAttribute("class", "extensionBtn");
+    closeBtn.innerHTML = "X";
+    extensionWindow.querySelector("div").appendChild(closeBtn);
+    closeBtn.hidden = true;
 
     // Adding top the top of the page, but keeping the extension window hidden
     container.insertBefore(extensionWindow, container.firstChild);
@@ -97,10 +103,30 @@ function init() {
         }
     }
 
-    // Activate extension and extension window when the activate button is pressed
-    activateBtn.onclick = activateExtension;
+    // Open extension and extension window when the open button is pressed
+    openBtn.onclick = openExtension;
 
-    function activateExtension() {
+    // Activate/deactivate extension based on popup message
+    chrome.runtime.onMessage.addListener(receiveStateMsg);
+    if (sessionStorage.getItem("extension state") == "deactivated") {
+        openBtn.hidden = true;
+    }
+
+    function receiveStateMsg(stateMsg) {
+        if (stateMsg["id"] == "stateMsg") {
+            if (stateMsg["extension state"] == "activated") {
+                openBtn.hidden = false;
+                sessionStorage.setItem("extension state", "activated");
+            }
+            if (stateMsg["extension state"] == "deactivated") {
+                openBtn.hidden = true;
+                extensionWindow.hidden = true;
+                sessionStorage.setItem("extension state", "deactivated");
+            }
+        }
+    }
+
+    function openExtension() {
         // Reveal extension window
         extensionWindow.hidden = false;
     
@@ -175,15 +201,15 @@ function init() {
             displayElement.innerHTML = transliteratedPinyin;
         }
 
-        // Hide the activate button and reveal the deactivate button
-        activateBtn.hidden = true;
-        deactivateBtn.hidden = false;
+        // Hide the open button and reveal the close button
+        openBtn.hidden = true;
+        closeBtn.hidden = false;
 
-        // Deactivate extension window when deactivate button is pressed
-        deactivateBtn.onclick = deactivateExtension;
+        // Close extension window when close button is pressed
+        closeBtn.onclick = closeExtension;
     }
 
-    function deactivateExtension() {
+    function closeExtension() {
         // Empty display element
         displayElement.innerHTML = "";
 
@@ -194,8 +220,8 @@ function init() {
         window.removeEventListener("mouseup", receiveText);
         chrome.runtime.onMessage.removeListener(receivePinyinMsg);
         
-        // Hide the deactivate button and reveal the activate button
-        activateBtn.hidden = false;
-        deactivateBtn.hidden = true;
+        // Hide the close button and reveal the open button
+        openBtn.hidden = false;
+        closeBtn.hidden = true;
     }
 }

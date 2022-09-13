@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-#activateBtn, .extensionWindowDiv * {
+#openBtn, .extensionWindowDiv * {
     font-family: "Source Sans Pro", sans-serif;
     line-height: 2rem;
     padding: 0;
@@ -19,7 +19,7 @@
 }
 
 .extensionBtn:hover,
-button:focus {
+.extensionBtn:focus {
     color: #FFF;
     border: 3px solid #42FBF2;
 }
@@ -44,14 +44,14 @@ button:focus {
     transform: scaleX(1);
 }
 
-#activateBtn {
+#openBtn {
     padding: 0.5rem;
     left: 10px; 
     top: 5px;
     position: fixed;
 }
 
-#deactivateBtn {
+#closeBtn {
     width: 2.5rem;
     height: 2.5rem;
     display:inline;
