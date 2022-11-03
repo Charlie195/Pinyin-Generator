@@ -1,6 +1,6 @@
 body {
-    width: 300px;
-    height: 190px;
+    width: 400px;
+    height: 250px;
     color: #112A46;
     background-color: #ACC8E5;
 }
@@ -25,7 +25,7 @@ button:focus {
     border: 3px solid #42FBF2;
 }
 
-button::before {
+#activateBtn::before, #deactivateBtn::before {
     content: "";
     position: absolute;
     top: 0;
@@ -40,7 +40,54 @@ button::before {
     transform-origin: left;
 }
 
-button:hover::before,
-button:focus::before {
+#activateBtn:hover::before, #deactivateBtn:hover::before,
+#activateBtn:focus::before, #deactivateBtn:focus::before {
     transform: scaleX(1);
+}
+
+.demoBtn {
+    height: 45px;
+    width: 45px;
+    border-radius: 45px;
+    text-align: center;
+}
+
+.demoBtn::before {
+    content: "";
+    position: absolute;
+    height: 39px;
+    width: 39px;
+    border-radius: 39px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    background-color: #25252A;
+
+    transition: opacity 300ms ease-in-out;
+    opacity: 0%;
+}
+
+.demoBtn:hover::before,
+.demoBtn:focus::before {
+    opacity: 100%;
+}
+
+#activateDemoBtn {
+    position: absolute;
+    top: 185px;
+    left: 10px;
+}
+
+#deactivateDemoBtn {
+    position: absolute;
+    top: 185px;
+    right: 8px;
+}
+
+video {
+    position: absolute;
+    top: 200px;
+    left: 48px;
 }

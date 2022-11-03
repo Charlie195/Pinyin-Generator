@@ -122,6 +122,10 @@ function init() {
                 openBtn.hidden = true;
                 extensionWindow.hidden = true;
                 sessionStorage.setItem("extension state", "deactivated");
+                
+                // Remove listeners to avoid duplication
+                window.removeEventListener("mouseup", receiveText);
+                chrome.runtime.onMessage.removeListener(receivePinyinMsg);
             }
         }
     }

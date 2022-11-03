@@ -108,3 +108,11 @@
     font-size: 1.25rem;
     border-radius: 5px;
 }
+
+.extensionBody h4 {
+    color: #112A46;
+    margin: 0;
+    padding: 0rem 0.75rem 0.25rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
