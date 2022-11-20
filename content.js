@@ -6,7 +6,11 @@ function init() {
     if (sessionStorage.getItem("extension state") == null) {
         sessionStorage.setItem("extension state", "activated")
     }
+
+    // Link for source of demo video
+    const demoVideoURL = chrome.runtime.getURL('pinyin_generator_demo.mp4');
     
+    // Container of html
     const container = document.querySelector("html");
 
     // Setting up open button
@@ -35,6 +39,13 @@ function init() {
             <h2>Here's your transliteration:</h2>
             <p></p>
             <h4>To activate/deactivate the extension, click on the extension icon</h4>
+
+            <button id="activateDemoBtn" class="demoBtn">i</button>
+            <button id="deactivateDemoBtn" class="demoBtn" hidden>X</button>
+
+            <video id="demoVideo" width="300" height="240" controls hidden>
+                <source src="${demoVideoURL}" type="video/mp4">
+            </video>
         </div>
     `;
 
@@ -127,6 +138,16 @@ function init() {
                 window.removeEventListener("mouseup", receiveText);
                 chrome.runtime.onMessage.removeListener(receivePinyinMsg);
             }
+        }
+    }
+
+    // Receive request for initial state
+    chrome.runtime.onMessage.addListener(receiveRequestInitialStateMsg);
+    
+    function receiveRequestInitialStateMsg(requestInitialStateMsg) {
+        if (requestInitialStateMsg["id"] == "requestInitialStateMsg") {
+            // Send message to popup.js with current extension state
+            chrome.runtime.sendMessage({"id": "initialStateMsg", "extension state": `${sessionStorage.getItem("extension state")}`});
         }
     }
 
@@ -227,5 +248,28 @@ function init() {
         // Hide the close button and reveal the open button
         openBtn.hidden = false;
         closeBtn.hidden = true;
+    }
+
+    // Buttons for activating/deactivating demo video
+    const activateDemoBtn = document.getElementById("activateDemoBtn");
+    const deactivateDemoBtn = document.getElementById("deactivateDemoBtn");
+    const demoVideo = document.getElementById("demoVideo");
+
+    activateDemoBtn.onclick = activateDemo;
+    deactivateDemoBtn.onclick = deactivateDemo;
+
+    function activateDemo() {
+        // document.getElementsByClassName("extensionWindowDiv")[0].style.height = "500px";
+        demoVideo.hidden = false;
+        activateDemoBtn.hidden = true;
+        deactivateDemoBtn.hidden = false;
+    }
+    
+    function deactivateDemo() {
+        // document.getElementsByClassName("extensionWindowDiv")[0].style.height = "350px";
+        demoVideo.pause();
+        demoVideo.hidden = true;
+        activateDemoBtn.hidden = false;
+        deactivateDemoBtn.hidden = true;
     }
 }

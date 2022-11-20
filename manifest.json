@@ -23,5 +23,6 @@
         "default_icon": "Pinyin Generator Icon.png",
         "default_popup": "popup.html",
         "default_title": "A popup will come here."
-    }
+    },
+    "web_accessible_resources": ["pinyin_generator_demo.mp4"]
 }

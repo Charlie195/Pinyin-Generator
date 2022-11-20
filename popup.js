@@ -1,30 +1,42 @@
+// Buttons to activate/deactivate the extension
 const activateBtn = document.getElementById("activateBtn");
 const deactivateBtn = document.getElementById("deactivateBtn");
-
-const activateDemoBtn = document.getElementById("activateDemoBtn");
-const demoVideo = document.getElementById("demoVideo")
 
 activateBtn.onclick = activateExtension;
 deactivateBtn.onclick = deactivateExtension;
 
-activateDemoBtn.onclick = activateDemo;
-deactivateDemoBtn.onclick = deactivateDemo;
+// Ensuring no duplication of listeners to retrieve the extension state when the popup is opened
+chrome.runtime.onMessage.removeListener(receiveInitalStateMsg);
+chrome.runtime.onMessage.addListener(receiveInitalStateMsg);
 
-if (sessionStorage.getItem("extension state") == null) {
-    sessionStorage.setItem("extension state", "activated")
+// Sending a message when the popup opens to request for extension state
+chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[0].id, {"id": "requestInitialStateMsg"});
+});
+
+// Retrieving the return message with extension state
+function receiveInitalStateMsg(initialStateMsg) {
+    if (initialStateMsg["id"] == "initialStateMsg") {
+        
+        // Matching session storage of popup to that of the content page
+        sessionStorage.setItem("extension state", `${initialStateMsg["extension state"]}`);
+
+        // Displaying the proper prompt and button based on extension state
+        if (sessionStorage.getItem("extension state") == "activated") {
+            activateBtn.hidden = true;
+            document.getElementById("extensionStateHeader").innerHTML = "The extension is currently activated";
+        }
+        
+        if (sessionStorage.getItem("extension state") == "deactivated") {
+            deactivateBtn.hidden = true;
+            document.getElementById("extensionStateHeader").innerHTML = "The extension is currently deactivated";
+        }
+    }
 }
 
-if (sessionStorage.getItem("extension state") == "activated") {
-    activateBtn.hidden = true;
-    document.getElementById("extensionStateHeader").innerHTML = "The extension is currently activated";
-}
-
-if (sessionStorage.getItem("extension state") == "deactivated") {
-    deactivateBtn.hidden = true;
-    document.getElementById("extensionStateHeader").innerHTML = "The extension is currently deactivated";
-}
-
+// Activating the extension
 function activateExtension() {
+    // Sending message to content script as an update of extension state change
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         chrome.tabs.sendMessage(tabs[0].id, {"id": "stateMsg", "extension state": "activated"});
     });
@@ -35,7 +47,9 @@ function activateExtension() {
     document.getElementById("extensionStateHeader").innerHTML = "The extension is currently activated";
 }
 
+// Deactivating the extension
 function deactivateExtension() {
+    // Sending message to content script as an update of extension state change
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         chrome.tabs.sendMessage(tabs[0].id, {"id": "stateMsg", "extension state": "deactivated"});
     });
@@ -44,19 +58,4 @@ function deactivateExtension() {
     deactivateBtn.hidden = true;
     activateBtn.hidden = false;
     document.getElementById("extensionStateHeader").innerHTML = "The extension is currently deactivated";
-}
-
-function activateDemo() {
-    document.body.style.height = "450px";
-    demoVideo.hidden = false;
-    activateDemoBtn.hidden = true;
-    deactivateDemoBtn.hidden = false;
-}
-
-function deactivateDemo() {
-    document.body.style.height = "250px";
-    demoVideo.pause();
-    demoVideo.hidden = true;
-    activateDemoBtn.hidden = false;
-    deactivateDemoBtn.hidden = true;
 }

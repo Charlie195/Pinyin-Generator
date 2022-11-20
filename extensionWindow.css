@@ -1,27 +1,30 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-#openBtn, .extensionWindowDiv * {
-    font-family: "Source Sans Pro", sans-serif;
-    line-height: 2rem;
-    padding: 0;
-    margin: 0;
-}
-
-.extensionBtn {
+button {
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 20px;
     z-index: 1000;
+    padding: 10px;
+    margin: 20px;
     border: 3px solid;
     transition: color 300ms ease-in-out;
     color: #112A46;
     background-color: #ACC8E5;
     border-radius: 5px;
+    position: relative;
 }
 
-.extensionBtn:hover,
-.extensionBtn:focus {
+button:hover,
+button:focus {
     color: #FFF;
     border: 3px solid #42FBF2;
+}
+
+#openBtn, .extensionWindowDiv * {
+    font-family: "Source Sans Pro", sans-serif;
+    line-height: 2rem;
+    padding: 0;
+    margin: 0;
 }
 
 .extensionBtn::before {
@@ -90,7 +93,7 @@
 
 .extensionBody {
     background-color: #ACC8E5;
-    padding: 0.75rem;
+    padding: 1rem;
 }
 
 .extensionBody h2 {
@@ -116,3 +119,50 @@
     font-weight: 600;
     font-size: 0.75rem;
 }
+
+.demoBtn {
+    height: 45px;
+    width: 45px;
+    border-radius: 45px;
+    text-align: center;
+}
+
+.demoBtn::before {
+    content: "";
+    position: absolute;
+    height: 39px;
+    width: 39px;
+    border-radius: 39px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    background-color: #25252A;
+
+    transition: opacity 300ms ease-in-out;
+    opacity: 0%;
+}
+
+.demoBtn:hover::before,
+.demoBtn:focus::before {
+    opacity: 100%;
+}
+
+/* #activateDemoBtn {
+    position: relative;
+    top: 10px;
+    bottom: -50px;
+    right: 150px;
+}
+
+#deactivateDemoBtn {
+    position: relative;
+    top: 10px;
+    bottom: -50px;
+    left: 150px;
+}
+
+video {
+    position: relative;
+} */
