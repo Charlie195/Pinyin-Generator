@@ -1,7 +1,7 @@
 {
     "name": "Pinyin Generator",
-    "version": "1.0",
-    "manifest_version": 2,
+    "version": "0.0.0.1",
+    "manifest_version": 3,
     "permissions": [
         "storage",
         "tabs"
@@ -10,19 +10,18 @@
         {
             "matches": ["<all_urls>"],
             "css": ["extensionWindow.css"],
-            "js": ["content.js"]
+            "js": ["content.js", "character-source.js"]
         }
     ],
-    "background": {
-        "scripts": [
-            "character-source.js",
-            "background.js"
-        ]
-    },
-    "browser_action": {
+    "action": {
         "default_icon": "Pinyin Generator Icon.png",
         "default_popup": "popup.html",
         "default_title": "A popup will come here."
     },
-    "web_accessible_resources": ["pinyin_generator_demo.mp4"]
+    "web_accessible_resources": [
+        {
+          "resources": ["pinyin_generator_demo.mp4"],
+          "matches": ["<all_urls>"]
+        }
+    ]
 }

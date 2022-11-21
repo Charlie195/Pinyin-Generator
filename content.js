@@ -16,7 +16,7 @@ function init() {
     // Setting up open button
     const openBtn = document.createElement("button");
     openBtn.setAttribute("id", "openBtn");
-    openBtn.setAttribute("class", "extensionBtn");
+    openBtn.setAttribute("class", "extensionBtn squareBtn");
     openBtn.innerHTML = "TRANSLITERATE";
     container.insertBefore(openBtn, document.body);
 
@@ -40,8 +40,8 @@ function init() {
             <p></p>
             <h4>To activate/deactivate the extension, click on the extension icon</h4>
 
-            <button id="activateDemoBtn" class="demoBtn">i</button>
-            <button id="deactivateDemoBtn" class="demoBtn" hidden>X</button>
+            <button id="activateDemoBtn" class="circularBtn extensionBtn">i</button>
+            <button id="deactivateDemoBtn" class="circularBtn extensionBtn" hidden>X</button>
 
             <video id="demoVideo" width="300" height="240" controls hidden>
                 <source src="${demoVideoURL}" type="video/mp4">
@@ -52,7 +52,7 @@ function init() {
     // Setting up close button on the extension window but keeping it hidden
     const closeBtn = document.createElement("button");
     closeBtn.setAttribute("id", "closeBtn");
-    closeBtn.setAttribute("class", "extensionBtn");
+    closeBtn.setAttribute("class", "extensionBtn squareBtn");
     closeBtn.innerHTML = "X";
     extensionWindow.querySelector("div").appendChild(closeBtn);
     closeBtn.hidden = true;
@@ -136,7 +136,6 @@ function init() {
                 
                 // Remove listeners to avoid duplication
                 window.removeEventListener("mouseup", receiveText);
-                chrome.runtime.onMessage.removeListener(receivePinyinMsg);
             }
         }
     }
@@ -168,57 +167,71 @@ function init() {
             }
         }
 
-        // Storing previous character states to format spaces properly
-        var prevWasPinyin;
-        var prevWasPunc;
-
-        // Receiving the pinyin message
-        receivePinyinMsg = (pinyinMsg) => {
-            if (pinyinMsg["id"] == "pinyinMsg") { // Checking if the message is for this receiver
-                // Adding space between pinyins and non-puncuations
-                if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                    transliteratedPinyin += " ";
-                }
-                
-                // Adding space between pinyins but not between pinyins and punctuation
-                if (pinyinMsg["isPinyin"] && !prevWasPunc) {
-                    transliteratedPinyin += " ";
-                    prevWasPinyin = true;
-                }
-                else {
-                    prevWasPinyin = false;
-                }
-
-                // Identifying if this character is a punctuation for the next character
-                prevWasPunc = false;
-                if (pinyinMsg["text"].match(/\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                    prevWasPunc = true;
-                }
-
-                transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
-
-                if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
-                    displayPinyin();
-                    prevWasPinyin = false;
-                }
-            }
-        }
-
         // Execute receiveText when mouse is released
         window.addEventListener("mouseup", receiveText);
-
-        // Listener to receive the background.js message with pinyin
-        chrome.runtime.onMessage.addListener(receivePinyinMsg);
 
         function transliterate(character, process) {
             // Send text as message object to background.js
             var characterMsg = {
-                "id": "characterMsg", // IDs to match specific sender to receiver
                 "text": character, // Character to transliterate
                 "finishedTransliteration": process // Identifying if there are more characters to transliterate
             };
-            // Send message to background.js
-            chrome.runtime.sendMessage(characterMsg);
+
+            // Find index of selectedCharacter in data source yessir
+            var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
+
+            // Find and return corresponding pinyin to content.js
+            try {
+                const pinyin = characterSource[index]["Pinyin"];
+
+                var pinyinMsg = {"text": pinyin, 
+                    "isPinyin": true, 
+                    "finishedTransliteration": characterMsg["finishedTransliteration"]
+                };
+            } 
+            catch(err) {
+                var pinyinMsg = {"text": characterMsg["text"], 
+                    "isPinyin": false, 
+                    "finishedTransliteration": characterMsg["finishedTransliteration"]
+                };
+            }
+            finally {
+                appendToDisplayText(pinyinMsg);
+            }
+        }
+
+        // Storing previous character states to format spaces properly
+        var prevWasPinyin;
+        var prevWasPunc;
+
+        // Seperate function to format the pinyin and non-pinyins together for the display
+        function appendToDisplayText(pinyinMsg) {
+            // Adding space between pinyins and non-puncuations
+            if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+                transliteratedPinyin += " ";
+            }
+            
+            // Adding space between pinyins but not between pinyins and punctuation
+            if (pinyinMsg["isPinyin"] && !prevWasPunc) {
+                transliteratedPinyin += " ";
+                prevWasPinyin = true;
+            }
+            else {
+                prevWasPinyin = false;
+            }
+
+            // Identifying if this character is a punctuation for the next character
+            prevWasPunc = false;
+            if (pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+                prevWasPunc = true;
+            }
+
+            transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
+
+            if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
+                displayPinyin();
+                prevWasPinyin = false;
+            }
         }
 
         function displayPinyin() {
@@ -243,7 +256,7 @@ function init() {
 
         // Remove listeners to avoid duplication
         window.removeEventListener("mouseup", receiveText);
-        chrome.runtime.onMessage.removeListener(receivePinyinMsg);
+        // chrome.runtime.onMessage.removeListener(receivePinyinMsg);
         
         // Hide the close button and reveal the open button
         openBtn.hidden = false;

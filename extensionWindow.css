@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-button {
+.extensionBtn {
     font-weight: bold;
     font-size: 20px;
     z-index: 1000;
@@ -14,8 +14,8 @@ button {
     position: relative;
 }
 
-button:hover,
-button:focus {
+.extensionBtn:hover,
+.extensionBtn:focus {
     color: #FFF;
     border: 3px solid #42FBF2;
 }
@@ -27,7 +27,7 @@ button:focus {
     margin: 0;
 }
 
-.extensionBtn::before {
+.squareBtn::before {
     content: "";
     position: absolute;
     top: 0;
@@ -42,8 +42,8 @@ button:focus {
     transform-origin: left;
 }
 
-.extensionBtn:hover::before,
-.extensionBtn:focus::before {
+.squareBtn:hover::before,
+.squareBtn:focus::before {
     transform: scaleX(1);
 }
 
@@ -120,14 +120,14 @@ button:focus {
     font-size: 0.75rem;
 }
 
-.demoBtn {
+.circularBtn {
     height: 45px;
     width: 45px;
     border-radius: 45px;
     text-align: center;
 }
 
-.demoBtn::before {
+.circularBtn::before {
     content: "";
     position: absolute;
     height: 39px;
@@ -144,8 +144,8 @@ button:focus {
     opacity: 0%;
 }
 
-.demoBtn:hover::before,
-.demoBtn:focus::before {
+.circularBtn:hover::before,
+.circularBtn:focus::before {
     opacity: 100%;
 }
 
