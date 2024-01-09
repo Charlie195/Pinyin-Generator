@@ -1,5 +1,5 @@
 # Pinyin Generator Chrome Extension
-![image]("Pinyin-Generator-Pinyin%20Generator%20Icon.png")
+![image]("Pinyin-Generator-Pinyin/%20Generator%20Icon.png")
 
 ## Overview
 
