@@ -23,7 +23,7 @@ function init() {
     const popup = document.createElement("div");
     popup.innerHTML = `
         <button id="openTooltipBtn" class="displayBtn">
-            <img id="openTooltipIcon" class="displayIcon" src=${openTooltipIcon} alt="Open Tooltip Icon" />
+            <img class="displayIcon" src=${openTooltipIcon} alt="Open Tooltip Icon" />
         </button>
         <div id="popupText">Hello</div>
     `;
@@ -36,7 +36,7 @@ function init() {
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `
         <button id="openPopupBtn" class="displayBtn">
-            <img id="openPopupIcon" class="displayIcon" src=${openPopupIcon} alt="Open Popup Icon" />
+            <img class="displayIcon" src=${openPopupIcon} alt="Open Popup Icon" />
         </button>
         <div id="tooltipText">Hello</div>
     `;
@@ -52,7 +52,7 @@ function init() {
     document.querySelector("html").appendChild(cssElement);
 
     // Making display element draggable:
-    dragElement(document.getElementById("popup"));
+    dragElement(popup);
 
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
