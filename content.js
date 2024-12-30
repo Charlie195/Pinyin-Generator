@@ -2,6 +2,15 @@
 window.onload = init;
 
 function init() {
+    // Constants for display mode
+    const MODES = {
+        aboveLine : "above line",
+        separate : "separate",
+    }
+
+    // Default display mode is above line
+    var displayMode = MODES.aboveLine;
+
     // Setting sessionStorage for activated/deactivated state to default if uninitialized
     if (sessionStorage.getItem("extension state") == null) {
         sessionStorage.setItem("extension state", "activated")
@@ -60,6 +69,15 @@ function init() {
     // Adding top the top of the page, but keeping the extension window hidden
     container.insertBefore(extensionWindow, container.firstChild);
     extensionWindow.hidden = true;
+
+    // Creating the tooltip to display pinyin on highlight
+    const tooltip = document.createElement("div");
+    tooltip.innerHTML = `
+        <div id="tooltipText">Hello</div>
+    `;
+    tooltip.setAttribute("id", "tooltip");
+    container.insertBefore(tooltip, container.firstChild);
+    tooltip.hidden = true;
 
     // Global variable for the element to display the transliteration in the extension window
     var displayElement = document.getElementsByClassName("extensionWindowDiv")[0].querySelector("p");
@@ -150,94 +168,215 @@ function init() {
         }
     }
 
+    function displayPinyin() {
+        // Display the transliteration in the display element
+        displayElement.innerHTML = transliteratedPinyin;
+
+        // Reveal tooltip with pinyin
+        tooltip.hidden = false;
+    }
+
+    // Assigning a function reference to the receiveText variable
+    receiveText = (eventObj) => {
+        const selection = window.getSelection();
+        // Getting highlighted text before possible DOM modifications that would unhighlight the text
+        var selectedText = selection.toString();
+
+        transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
+
+        // Transliterate through each character of highlighted text
+        for (var i = 0; i < selectedText.length; i++) {
+            transliterate(selectedText[i], i == selectedText.length - 1);
+        }
+
+        if (selection.isCollapsed) {
+            tooltip.hidden = true;
+            return;
+        }
+        else {
+            document.getElementById("tooltipText").innerHTML = transliteratedPinyin;
+            const rect = selection.getRangeAt(0).getBoundingClientRect();
+
+            // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
+            const scrollLeft = window.pageXOffset;
+            const scrollTop = window.pageYOffset;
+
+            tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.clientWidth / 2 + scrollLeft}px`;
+            tooltip.style.top = `${rect.top - tooltip.clientHeight - 10 + scrollTop}px`;
+        }
+    }
+
+    // Execute receiveText when mouse is released
+    window.addEventListener("mouseup", receiveText);
+
+    function transliterate(character, process) {
+        // Send text as message object to background.js
+        var characterMsg = {
+            "text": character, // Character to transliterate
+            "finishedTransliteration": process // Identifying if there are more characters to transliterate
+        };
+
+        // Find index of selectedCharacter in data source yessir
+        var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
+
+        // Find and return corresponding pinyin to content.js
+        try {
+            const pinyin = characterSource[index]["Pinyin"];
+
+            var pinyinMsg = {"text": pinyin, 
+                "isPinyin": true, 
+                "finishedTransliteration": characterMsg["finishedTransliteration"]
+            };
+        } 
+        catch(err) {
+            var pinyinMsg = {"text": characterMsg["text"], 
+                "isPinyin": false, 
+                "finishedTransliteration": characterMsg["finishedTransliteration"]
+            };
+        }
+        finally {
+            appendToDisplayText(pinyinMsg);
+        }
+    }
+
+    // Storing previous character states to format spaces properly
+    var prevWasPinyin;
+    var prevWasPunc;
+
+    // Seperate function to format the pinyin and non-pinyins together for the display
+    function appendToDisplayText(pinyinMsg) {
+        // Adding space between pinyins and non-puncuations
+        if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+            transliteratedPinyin += " ";
+        }
+        
+        // Adding space between pinyins but not between pinyins and punctuation
+        if (pinyinMsg["isPinyin"] && !prevWasPunc) {
+            transliteratedPinyin += " ";
+            prevWasPinyin = true;
+        }
+        else {
+            prevWasPinyin = false;
+        }
+
+        // Identifying if this character is a punctuation for the next character
+        prevWasPunc = false;
+        if (pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+            prevWasPunc = true;
+        }
+
+        transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
+
+        if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
+            displayPinyin();
+            prevWasPinyin = false;
+        }
+    }
+
     function openExtension() {
         // Reveal extension window
-        extensionWindow.hidden = false;
+        // extensionWindow.hidden = false;
     
-        // Assigning a function reference to the receiveText variable
-        receiveText = (eventObj) => {
-            // Getting highlighted text before possible DOM modifications that would unhighlight the text
-            var selectedText = window.getSelection().toString();
+        // // Assigning a function reference to the receiveText variable
+        // receiveText = (eventObj) => {
+        //     const selection = window.getSelection();
+        //     // Getting highlighted text before possible DOM modifications that would unhighlight the text
+        //     var selectedText = selection.toString();
 
-            transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
+        //     transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
 
-            // Transliterate through each character of highlighted text
-            for (var i = 0; i < selectedText.length; i++) {
-                transliterate(selectedText[i], i == selectedText.length - 1);
-            }
-        }
+        //     // Transliterate through each character of highlighted text
+        //     for (var i = 0; i < selectedText.length; i++) {
+        //         transliterate(selectedText[i], i == selectedText.length - 1);
+        //     }
 
-        // Execute receiveText when mouse is released
-        window.addEventListener("mouseup", receiveText);
+        //     if (selection.isCollapsed) {
+        //         tooltip.hidden = true;
+        //         console.log("her her")
+        //         return;
+        //     }
+        //     else {
+        //         document.getElementById("tooltipText").innerHTML = transliteratedPinyin;
+        //         const rect = selection.getRangeAt(0).getBoundingClientRect();
 
-        function transliterate(character, process) {
-            // Send text as message object to background.js
-            var characterMsg = {
-                "text": character, // Character to transliterate
-                "finishedTransliteration": process // Identifying if there are more characters to transliterate
-            };
+        //         // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
+        //         const scrollLeft = window.pageXOffset;
+        //         const scrollTop = window.pageYOffset;
 
-            // Find index of selectedCharacter in data source yessir
-            var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
+        //         console.log("tooltip: " + tooltip.clientWidth);
+        //         console.log(rect.left + rect.width / 2 - tooltip.clientWidth / 2);
 
-            // Find and return corresponding pinyin to content.js
-            try {
-                const pinyin = characterSource[index]["Pinyin"];
+        //         tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.clientWidth / 2 + scrollLeft}px`;
+        //         tooltip.style.top = `${rect.top - tooltip.clientHeight - 10 + scrollTop}px`;
+        //     }
+        // }
 
-                var pinyinMsg = {"text": pinyin, 
-                    "isPinyin": true, 
-                    "finishedTransliteration": characterMsg["finishedTransliteration"]
-                };
-            } 
-            catch(err) {
-                var pinyinMsg = {"text": characterMsg["text"], 
-                    "isPinyin": false, 
-                    "finishedTransliteration": characterMsg["finishedTransliteration"]
-                };
-            }
-            finally {
-                appendToDisplayText(pinyinMsg);
-            }
-        }
+        // // Execute receiveText when mouse is released
+        // window.addEventListener("mouseup", receiveText);
 
-        // Storing previous character states to format spaces properly
-        var prevWasPinyin;
-        var prevWasPunc;
+        // function transliterate(character, process) {
+        //     // Send text as message object to background.js
+        //     var characterMsg = {
+        //         "text": character, // Character to transliterate
+        //         "finishedTransliteration": process // Identifying if there are more characters to transliterate
+        //     };
 
-        // Seperate function to format the pinyin and non-pinyins together for the display
-        function appendToDisplayText(pinyinMsg) {
-            // Adding space between pinyins and non-puncuations
-            if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                transliteratedPinyin += " ";
-            }
+        //     // Find index of selectedCharacter in data source yessir
+        //     var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
+
+        //     // Find and return corresponding pinyin to content.js
+        //     try {
+        //         const pinyin = characterSource[index]["Pinyin"];
+
+        //         var pinyinMsg = {"text": pinyin, 
+        //             "isPinyin": true, 
+        //             "finishedTransliteration": characterMsg["finishedTransliteration"]
+        //         };
+        //     } 
+        //     catch(err) {
+        //         var pinyinMsg = {"text": characterMsg["text"], 
+        //             "isPinyin": false, 
+        //             "finishedTransliteration": characterMsg["finishedTransliteration"]
+        //         };
+        //     }
+        //     finally {
+        //         appendToDisplayText(pinyinMsg);
+        //     }
+        // }
+
+        // // Storing previous character states to format spaces properly
+        // var prevWasPinyin;
+        // var prevWasPunc;
+
+        // // Seperate function to format the pinyin and non-pinyins together for the display
+        // function appendToDisplayText(pinyinMsg) {
+        //     // Adding space between pinyins and non-puncuations
+        //     if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+        //         transliteratedPinyin += " ";
+        //     }
             
-            // Adding space between pinyins but not between pinyins and punctuation
-            if (pinyinMsg["isPinyin"] && !prevWasPunc) {
-                transliteratedPinyin += " ";
-                prevWasPinyin = true;
-            }
-            else {
-                prevWasPinyin = false;
-            }
+        //     // Adding space between pinyins but not between pinyins and punctuation
+        //     if (pinyinMsg["isPinyin"] && !prevWasPunc) {
+        //         transliteratedPinyin += " ";
+        //         prevWasPinyin = true;
+        //     }
+        //     else {
+        //         prevWasPinyin = false;
+        //     }
 
-            // Identifying if this character is a punctuation for the next character
-            prevWasPunc = false;
-            if (pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                prevWasPunc = true;
-            }
+        //     // Identifying if this character is a punctuation for the next character
+        //     prevWasPunc = false;
+        //     if (pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
+        //         prevWasPunc = true;
+        //     }
 
-            transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
+        //     transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
 
-            if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
-                displayPinyin();
-                prevWasPinyin = false;
-            }
-        }
-
-        function displayPinyin() {
-            // Display the transliteration in the display element
-            displayElement.innerHTML = transliteratedPinyin;
-        }
+        //     if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
+        //         displayPinyin();
+        //         prevWasPinyin = false;
+        //     }
+        // }
 
         // Hide the open button and reveal the close button
         openBtn.hidden = true;

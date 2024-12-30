@@ -166,3 +166,31 @@
 video {
     position: relative;
 } */
+
+#tooltip {
+    position: absolute;
+    z-index: 1000;
+    background-color: aliceblue;
+    border-radius: 5px;
+    padding: 0 10px;
+    color: #25252A;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+#tooltip::after {
+    content: "";
+    display: block;
+    border: 5px solid;
+    border-color: aliceblue transparent transparent transparent;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#tooltipText {
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    cursor: pointer;
+}
