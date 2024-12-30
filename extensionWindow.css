@@ -8,6 +8,12 @@
     color: #25252A;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     cursor: move;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.hidden {
+    opacity: 0;
 }
 
 .popup {

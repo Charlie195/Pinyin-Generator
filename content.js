@@ -26,9 +26,8 @@ function init() {
         </button>
         <div id="displayText">Hello</div>
     `;
-    display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
+    display.setAttribute("class", "display tooltip hidden");   // Initially set as tooltip mode and hidden
     container.insertBefore(display, container.firstChild);
-    display.hidden = true;  // Initially hidden
     const revertBtn = document.getElementById("revertBtn");
 
     // Injecting css for extension window
@@ -105,11 +104,11 @@ function init() {
 
     function displayPinyin() {
         // Reveal the display element
-        display.hidden = false;
+        display.classList.remove("hidden");
 
         if (selection.isCollapsed) {
             // Close display when nothing is selected
-            display.hidden = true;
+            display.classList.add("hidden");
             return;
         }
         else {
