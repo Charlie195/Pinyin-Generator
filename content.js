@@ -156,8 +156,9 @@ function init() {
         displayPinyin();
     }
 
-    // Execute receiveText when mouse is released
-    window.addEventListener("mouseup", receiveText);
+    // Execute receiveText when the selected text is changed
+    document.addEventListener("selectionchange", receiveText);
+
 
     function transliterate(character, process) {
         // Send text as message object to background.js
