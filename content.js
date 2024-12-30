@@ -25,12 +25,12 @@ function init() {
     // Container of html
     const container = document.querySelector("html");
 
-    // Setting up open button
-    const openBtn = document.createElement("button");
-    openBtn.setAttribute("id", "openBtn");
-    openBtn.setAttribute("class", "extensionBtn squareBtn");
-    openBtn.innerHTML = "TRANSLITERATE";
-    container.insertBefore(openBtn, document.body);
+    // // Setting up open button
+    // const openBtn = document.createElement("button");
+    // openBtn.setAttribute("id", "openBtn");
+    // openBtn.setAttribute("class", "extensionBtn squareBtn");
+    // openBtn.innerHTML = "TRANSLITERATE";
+    // container.insertBefore(openBtn, document.body);
 
     // Global variable to store the function reference
     var receiveText;
@@ -139,59 +139,77 @@ function init() {
         }
     }
 
+
+    // Variable for the reference of current display element (popup or tooltip)
+    var display = tooltip;
+
     // Open extension and extension window when the open button is pressed
     function openSeparate() {
+        console.log(tooltip.style.left);
         extensionWindow.hidden = false;
         tooltip.hidden = true;
+        display = extensionWindow;
+    }
+
+    function openTooltip() {
+        extensionWindow.hidden = true;
+        tooltip.hidden = false;
+        tooltip.style.left = `${parseFloat(tooltip.style.left) - tooltip.clientWidth / 2}px`;
+        tooltip.style.top = `${parseFloat(tooltip.style.top) - tooltip.clientHeight}px`;
+        display = tooltip;
     }
 
     separateBtn.onclick = openSeparate;
-    openBtn.onclick = openExtension;
+    closeBtn.onclick = openTooltip;
 
-    // Activate/deactivate extension based on popup message
-    chrome.runtime.onMessage.addListener(receiveStateMsg);
-    if (sessionStorage.getItem("extension state") == "deactivated") {
-        openBtn.hidden = true;
-    }
+    // openBtn.onclick = openExtension;
 
-    function receiveStateMsg(stateMsg) {
-        if (stateMsg["id"] == "stateMsg") {
-            if (stateMsg["extension state"] == "activated") {
-                openBtn.hidden = false;
-                sessionStorage.setItem("extension state", "activated");
-            }
-            if (stateMsg["extension state"] == "deactivated") {
-                openBtn.hidden = true;
-                extensionWindow.hidden = true;
-                sessionStorage.setItem("extension state", "deactivated");
+    // // Activate/deactivate extension based on popup message
+    // chrome.runtime.onMessage.addListener(receiveStateMsg);
+    // if (sessionStorage.getItem("extension state") == "deactivated") {
+    //     openBtn.hidden = true;
+    // }
+
+    // function receiveStateMsg(stateMsg) {
+    //     if (stateMsg["id"] == "stateMsg") {
+    //         if (stateMsg["extension state"] == "activated") {
+    //             openBtn.hidden = false;
+    //             sessionStorage.setItem("extension state", "activated");
+    //         }
+    //         if (stateMsg["extension state"] == "deactivated") {
+    //             openBtn.hidden = true;
+    //             extensionWindow.hidden = true;
+    //             sessionStorage.setItem("extension state", "deactivated");
                 
-                // Remove listeners to avoid duplication
-                window.removeEventListener("mouseup", receiveText);
-            }
-        }
-    }
+    //             // Remove listeners to avoid duplication
+    //             window.removeEventListener("mouseup", receiveText);
+    //         }
+    //     }
+    // }
 
-    // Receive request for initial state
-    chrome.runtime.onMessage.addListener(receiveRequestInitialStateMsg);
+    // // Receive request for initial state
+    // chrome.runtime.onMessage.addListener(receiveRequestInitialStateMsg);
     
-    function receiveRequestInitialStateMsg(requestInitialStateMsg) {
-        if (requestInitialStateMsg["id"] == "requestInitialStateMsg") {
-            // Send message to popup.js with current extension state
-            chrome.runtime.sendMessage({"id": "initialStateMsg", "extension state": `${sessionStorage.getItem("extension state")}`});
-        }
-    }
+    // function receiveRequestInitialStateMsg(requestInitialStateMsg) {
+    //     if (requestInitialStateMsg["id"] == "requestInitialStateMsg") {
+    //         // Send message to popup.js with current extension state
+    //         chrome.runtime.sendMessage({"id": "initialStateMsg", "extension state": `${sessionStorage.getItem("extension state")}`});
+    //     }
+    // }
 
     var selection;
 
     function displayPinyin() {
-        // Reveal popup with pinyin if the display mode is separate
-        displayElement.hidden = displayMode != MODES.separate;
+        // // Reveal popup with pinyin if the display mode is separate
+        // displayElement.hidden = displayMode != MODES.separate;
 
         // Display the transliteration on the popup
         displayElement.innerHTML = transliteratedPinyin;
 
-        // Reveal tooltip with pinyin if the display mode is above line
-        tooltip.hidden = displayMode != MODES.aboveLine;
+        // // Reveal tooltip with pinyin if the display mode is above line
+        // tooltip.hidden = displayMode != MODES.aboveLine;
+
+        display.hidden = false;
 
         // Display the transliteration on the tooltip
         if (selection.isCollapsed) {
@@ -200,6 +218,7 @@ function init() {
         }
         else {
             document.getElementById("tooltipText").innerHTML = transliteratedPinyin;
+            document.getElementById("tooltipText").innerHTML = "x";
             const rect = selection.getRangeAt(0).getBoundingClientRect();
 
             // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
