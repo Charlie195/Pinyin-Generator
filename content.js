@@ -9,7 +9,7 @@ function init() {
     }
 
     const separateIcon = chrome.runtime.getURL('separate.png');
-    const aboveLineIcon = chrome.runtime.getURL('aboveLing.png')
+    const aboveLineIcon = chrome.runtime.getURL('aboveLine.png')
 
     // Default display mode is above line
     var displayMode = MODES.aboveLine;
@@ -61,6 +61,19 @@ function init() {
         </div>
     `;
 
+    // Creating the popup to display pinyin on highlight
+    const popup = document.createElement("div");
+    popup.innerHTML = `
+        <button id="openTooltipBtn" class="displayBtn">
+            <img id="openTooltipIcon" class="displayIcon" src=${aboveLineIcon} alt="Open Tooltip Icon" />
+        </button>
+        <div id="popupText">Hello</div>
+    `;
+    popup.setAttribute("id", "popup");
+    container.insertBefore(popup, container.firstChild);
+    popup.hidden = true;
+    const openTooltipBtn = document.getElementById("openTooltipBtn");
+
     // Setting up close button on the extension window but keeping it hidden
     const closeBtn = document.createElement("button");
     closeBtn.setAttribute("id", "closeBtn");
@@ -76,8 +89,8 @@ function init() {
     // Creating the tooltip to display pinyin on highlight
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `
-        <button id="separateBtn">
-            <img id="separateIcon" src=${separateIcon} alt="Separate Icon" />
+        <button id="separateBtn" class="displayBtn">
+            <img id="separateIcon" class="displayIcon" src=${separateIcon} alt="Separate Icon" />
         </button>
         <div id="tooltipText">Hello</div>
     `;
@@ -96,17 +109,20 @@ function init() {
     document.querySelector("html").appendChild(cssElement);
 
     // Making extension window draggable:
-    dragElement(document.getElementsByClassName("extensionWindowDiv")[0]);
+    // dragElement(document.getElementsByClassName("extensionWindowDiv")[0]);
+    dragElement(document.getElementById("popup"));
 
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (document.getElementsByClassName("draggableHeader")[0]) {
-            // Ff present, the header is where you move the DIV from:
-            document.getElementsByClassName("draggableHeader")[0].onmousedown = dragMouseDown;
-        } else {
-            // Otherwise, move the DIV from anywhere inside the DIV:
-            elmnt.onmousedown = dragMouseDown;
-        }
+        // if (document.getElementsByClassName("draggableHeader")[0]) {
+        //     // Ff present, the header is where you move the DIV from:
+        //     document.getElementsByClassName("draggableHeader")[0].onmousedown = dragMouseDown;
+        // } else {
+        //     // Otherwise, move the DIV from anywhere inside the DIV:
+        //     elmnt.onmousedown = dragMouseDown;
+        // }
+
+        elmnt.onmousedown = dragMouseDown;
 
         function dragMouseDown(e) {
             e = e || window.event;
@@ -145,14 +161,14 @@ function init() {
 
     // Open extension and extension window when the open button is pressed
     function openSeparate() {
-        console.log(tooltip.style.left);
-        extensionWindow.hidden = false;
+        popup.hidden = false;
         tooltip.hidden = true;
-        display = extensionWindow;
+        display = popup;
     }
 
     function openTooltip() {
-        extensionWindow.hidden = true;
+        console.log("yo");
+        popup.hidden = true;
         tooltip.hidden = false;
         tooltip.style.left = `${parseFloat(tooltip.style.left) - tooltip.clientWidth / 2}px`;
         tooltip.style.top = `${parseFloat(tooltip.style.top) - tooltip.clientHeight}px`;
@@ -160,7 +176,7 @@ function init() {
     }
 
     separateBtn.onclick = openSeparate;
-    closeBtn.onclick = openTooltip;
+    openTooltipBtn.onclick = openTooltip;
 
     // openBtn.onclick = openExtension;
 
@@ -211,14 +227,17 @@ function init() {
 
         display.hidden = false;
 
-        // Display the transliteration on the tooltip
+        // Display the transliteration on the display
         if (selection.isCollapsed) {
-            tooltip.hidden = true;
+            display.hidden = true;
             return;
         }
         else {
+            // Set transliteration on popup
+            document.getElementById("popupText").innerHTML = transliteratedPinyin;
+
+            // Set transliteration on tooltip
             document.getElementById("tooltipText").innerHTML = transliteratedPinyin;
-            document.getElementById("tooltipText").innerHTML = "x";
             const rect = selection.getRangeAt(0).getBoundingClientRect();
 
             // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport

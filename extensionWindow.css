@@ -167,6 +167,26 @@ video {
     position: relative;
 } */
 
+#popup {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background-color: aliceblue;
+    border-radius: 5px;
+    padding: 0 10px;
+    color: #25252A;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    cursor: move;
+}
+
+#popupText {
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
 #tooltip {
     position: absolute;
     z-index: 1000;
@@ -194,7 +214,7 @@ video {
     padding: 5px 10px;
 }
 
-#separateBtn {
+.displayBtn {
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -205,7 +225,7 @@ video {
     right: -12px;
 }
 
-#separateIcon {
+.displayIcon {
     width: 25px;
     height: 25px;
     object-fit: contain;
