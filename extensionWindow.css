@@ -189,8 +189,27 @@ video {
 
 #tooltipText {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: bold;
     padding: 5px 10px;
+}
+
+#separateBtn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 0;
+    position: absolute;
+    background-color: rgb(145, 196, 240);
+    top: -12px;
+    right: -12px;
+}
+
+#separateIcon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
     cursor: pointer;
+    margin: auto;
+    padding: 0;
 }

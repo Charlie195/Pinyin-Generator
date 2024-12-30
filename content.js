@@ -8,6 +8,9 @@ function init() {
         separate : "separate",
     }
 
+    const separateIcon = chrome.runtime.getURL('separate.png');
+    const aboveLineIcon = chrome.runtime.getURL('aboveLing.png')
+
     // Default display mode is above line
     var displayMode = MODES.aboveLine;
 
@@ -73,11 +76,15 @@ function init() {
     // Creating the tooltip to display pinyin on highlight
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `
+        <button id="separateBtn">
+            <img id="separateIcon" src=${separateIcon} alt="Separate Icon" />
+        </button>
         <div id="tooltipText">Hello</div>
     `;
     tooltip.setAttribute("id", "tooltip");
     container.insertBefore(tooltip, container.firstChild);
     tooltip.hidden = true;
+    const separateBtn = document.getElementById("separateBtn");
 
     // Global variable for the element to display the transliteration in the extension window
     var displayElement = document.getElementsByClassName("extensionWindowDiv")[0].querySelector("p");
@@ -133,6 +140,12 @@ function init() {
     }
 
     // Open extension and extension window when the open button is pressed
+    function openSeparate() {
+        extensionWindow.hidden = false;
+        tooltip.hidden = true;
+    }
+
+    separateBtn.onclick = openSeparate;
     openBtn.onclick = openExtension;
 
     // Activate/deactivate extension based on popup message
@@ -168,27 +181,19 @@ function init() {
         }
     }
 
+    var selection;
+
     function displayPinyin() {
-        // Display the transliteration in the display element
+        // Reveal popup with pinyin if the display mode is separate
+        displayElement.hidden = displayMode != MODES.separate;
+
+        // Display the transliteration on the popup
         displayElement.innerHTML = transliteratedPinyin;
 
-        // Reveal tooltip with pinyin
-        tooltip.hidden = false;
-    }
+        // Reveal tooltip with pinyin if the display mode is above line
+        tooltip.hidden = displayMode != MODES.aboveLine;
 
-    // Assigning a function reference to the receiveText variable
-    receiveText = (eventObj) => {
-        const selection = window.getSelection();
-        // Getting highlighted text before possible DOM modifications that would unhighlight the text
-        var selectedText = selection.toString();
-
-        transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
-
-        // Transliterate through each character of highlighted text
-        for (var i = 0; i < selectedText.length; i++) {
-            transliterate(selectedText[i], i == selectedText.length - 1);
-        }
-
+        // Display the transliteration on the tooltip
         if (selection.isCollapsed) {
             tooltip.hidden = true;
             return;
@@ -204,6 +209,22 @@ function init() {
             tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.clientWidth / 2 + scrollLeft}px`;
             tooltip.style.top = `${rect.top - tooltip.clientHeight - 10 + scrollTop}px`;
         }
+    }
+
+    // Assigning a function reference to the receiveText variable
+    receiveText = (eventObj) => {
+        selection = window.getSelection();
+        // Getting highlighted text before possible DOM modifications that would unhighlight the text
+        var selectedText = selection.toString();
+
+        transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
+
+        // Transliterate through each character of highlighted text
+        for (var i = 0; i < selectedText.length; i++) {
+            transliterate(selectedText[i], i == selectedText.length - 1);
+        }
+
+        displayPinyin();
     }
 
     // Execute receiveText when mouse is released
@@ -268,7 +289,7 @@ function init() {
         transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
 
         if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
-            displayPinyin();
+            // displayPinyin();
             prevWasPinyin = false;
         }
     }
