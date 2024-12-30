@@ -105,8 +105,6 @@ function init() {
     function openTooltip() {
         popup.hidden = true;
         tooltip.hidden = false;
-        tooltip.style.left = `${parseFloat(tooltip.style.left) - tooltip.clientWidth / 2}px`;
-        tooltip.style.top = `${parseFloat(tooltip.style.top) - tooltip.clientHeight}px`;
         display = tooltip;
     }
 
