@@ -26,7 +26,7 @@ function init() {
         </button>
         <div id="displayText">Hello</div>
     `;
-    display.setAttribute("class", "tooltip");   // Initially set as tooltip mode
+    display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
     container.insertBefore(display, container.firstChild);
     display.hidden = true;  // Initially hidden
     const revertBtn = document.getElementById("revertBtn");
@@ -48,9 +48,10 @@ function init() {
 
         function dragMouseDown(e) {
             // Initial transition to popup mode
-            if (display.getAttribute("class") != "popup") {
+            if (display.classList.contains("tooltip")) {
                 // Popup mode
-                display.setAttribute("class", "popup");
+                display.classList.remove("tooltip");
+                display.classList.add("popup");
                 
                 // Take away the scroll offsets from the positioning since the position is now fixed
                 display.style.left = `${parseFloat(display.style.left) - window.scrollX}px`;
@@ -93,7 +94,8 @@ function init() {
 
     function revert() {
         // Tooltip mode
-        display.setAttribute("class", "tooltip");
+        display.classList.remove("popup");
+        display.classList.add("tooltip");
         display.style.left = revertLeft;
         display.style.top = revertTop;
         revertBtn.hidden = true;
@@ -124,7 +126,7 @@ function init() {
             revertTop = `${rect.top - display.clientHeight - 10 + scrollTop}px`;
 
             // Set update the position of the display if it is in tooltip mode
-            if (display.getAttribute("class") == "tooltip") {
+            if (display.classList.contains("tooltip")) {
                 display.style.left = revertLeft;
                 display.style.top = revertTop;
             }

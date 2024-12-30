@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-.popup {
-    position: fixed;
+.display {
     z-index: 1000;
     background-color: aliceblue;
     border-radius: 5px;
@@ -11,15 +10,12 @@
     cursor: move;
 }
 
+.popup {
+    position: fixed;
+}
+
 .tooltip {
     position: absolute;
-    z-index: 1000;
-    background-color: aliceblue;
-    border-radius: 5px;
-    padding: 0 10px;
-    color: #25252A;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    cursor: move;
 }
 
 .tooltip::after {
