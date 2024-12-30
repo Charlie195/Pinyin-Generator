@@ -2,25 +2,13 @@
 window.onload = init;
 
 function init() {
-    // Constants for display mode
-    const MODES = {
-        aboveLine : "above line",
-        separate : "separate",
-    }
-
-    const separateIcon = chrome.runtime.getURL('separate.png');
-    const aboveLineIcon = chrome.runtime.getURL('aboveLine.png')
-
-    // Default display mode is above line
-    var displayMode = MODES.aboveLine;
+    const openPopupIcon = chrome.runtime.getURL('openPopup.png');
+    const openTooltipIcon = chrome.runtime.getURL('openTooltip.png')
 
     // Setting sessionStorage for activated/deactivated state to default if uninitialized
     if (sessionStorage.getItem("extension state") == null) {
         sessionStorage.setItem("extension state", "activated")
     }
-
-    // Link for source of demo video
-    const demoVideoURL = chrome.runtime.getURL('pinyin_generator_demo.mp4');
     
     // Container of html
     const container = document.querySelector("html");
@@ -35,27 +23,27 @@ function init() {
     const popup = document.createElement("div");
     popup.innerHTML = `
         <button id="openTooltipBtn" class="displayBtn">
-            <img id="openTooltipIcon" class="displayIcon" src=${aboveLineIcon} alt="Open Tooltip Icon" />
+            <img id="openTooltipIcon" class="displayIcon" src=${openTooltipIcon} alt="Open Tooltip Icon" />
         </button>
         <div id="popupText">Hello</div>
     `;
     popup.setAttribute("id", "popup");
     container.insertBefore(popup, container.firstChild);
-    popup.hidden = true;
+    popup.hidden = true;    // Initially hidden
     const openTooltipBtn = document.getElementById("openTooltipBtn");
 
     // Creating the tooltip to display pinyin on highlight
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `
-        <button id="separateBtn" class="displayBtn">
-            <img id="separateIcon" class="displayIcon" src=${separateIcon} alt="Separate Icon" />
+        <button id="openPopupBtn" class="displayBtn">
+            <img id="openPopupIcon" class="displayIcon" src=${openPopupIcon} alt="Open Popup Icon" />
         </button>
         <div id="tooltipText">Hello</div>
     `;
     tooltip.setAttribute("id", "tooltip");
     container.insertBefore(tooltip, container.firstChild);
-    tooltip.hidden = true;
-    const separateBtn = document.getElementById("separateBtn");
+    tooltip.hidden = true;  // Initially hidden
+    const openPopupBtn = document.getElementById("openPopupBtn");
 
     // Injecting css for extension window
     var cssElement = document.createElement("link");
@@ -108,14 +96,13 @@ function init() {
     var display = tooltip;
 
     // Open extension and extension window when the open button is pressed
-    function openSeparate() {
+    function openPopup() {
         popup.hidden = false;
         tooltip.hidden = true;
         display = popup;
     }
 
     function openTooltip() {
-        console.log("yo");
         popup.hidden = true;
         tooltip.hidden = false;
         tooltip.style.left = `${parseFloat(tooltip.style.left) - tooltip.clientWidth / 2}px`;
@@ -123,7 +110,7 @@ function init() {
         display = tooltip;
     }
 
-    separateBtn.onclick = openSeparate;
+    openPopupBtn.onclick = openPopup;
     openTooltipBtn.onclick = openTooltip;
 
     var selection;

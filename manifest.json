@@ -16,7 +16,7 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["aboveLine.png", "separate.png", "pinyin_generator_demo.mp4"],
+          "resources": ["openPopup.png", "openTooltip.png"],
           "matches": ["<all_urls>"]
         }
     ]
