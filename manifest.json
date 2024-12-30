@@ -16,7 +16,7 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["openPopup.png", "openTooltip.png"],
+          "resources": ["revert.png"],
           "matches": ["<all_urls>"]
         }
     ]

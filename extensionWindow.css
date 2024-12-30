@@ -1,176 +1,7 @@
 @import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
 
-.extensionBtn {
-    font-weight: bold;
-    font-size: 20px;
-    z-index: 1000;
-    padding: 10px;
-    margin: 20px;
-    border: 3px solid;
-    transition: color 300ms ease-in-out;
-    color: #112A46;
-    background-color: #ACC8E5;
-    border-radius: 5px;
-    position: relative;
-}
-
-.extensionBtn:hover,
-.extensionBtn:focus {
-    color: #FFF;
-    border: 3px solid #42FBF2;
-}
-
-#openBtn, .extensionWindowDiv * {
-    font-family: "Source Sans Pro", sans-serif;
-    line-height: 2rem;
-    padding: 0;
-    margin: 0;
-}
-
-.squareBtn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: -1;
-    background-color: #25252A;
-
-    transition: transform 300ms ease-in-out;
-    transform: scaleX(0);
-    transform-origin: left;
-}
-
-.squareBtn:hover::before,
-.squareBtn:focus::before {
-    transform: scaleX(1);
-}
-
-#openBtn {
-    padding: 0.5rem;
-    left: 10px; 
-    top: 5px;
+.popup {
     position: fixed;
-}
-
-#closeBtn {
-    width: 2.5rem;
-    height: 2.5rem;
-    display:inline;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-}
-
-.extensionWindowDiv {
-    font-family: "Source Sans Pro", sans-serif;
-    z-index: 1000;
-    border: 3px solid #112A46;
-    text-align: center;
-    width: 40ch;
-    border-radius: 0.5625rem;
-    position: fixed;
-}
-
-.draggableHeader {
-    padding: 0.75rem;
-    cursor: move;
-    z-index: 1001;
-    color: #ACC8E5;
-    background-color: #112A46;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    position: relative;
-}
-
-.draggableHeader h1 {
-    font-weight: bold;
-    color: #ACC8E5;
-    display:inline;
-    font-size: 1.25rem;
-}
-
-.extensionBody {
-    background-color: #ACC8E5;
-    padding: 1rem;
-}
-
-.extensionBody h2 {
-    color: #112A46;
-    margin: 0;
-    padding: 0rem 0.5rem 1rem;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.extensionBody p {
-    background-color: bisque;
-    color: rgb(94, 47, 13);
-    font-weight: bold;
-    font-size: 1.25rem;
-    border-radius: 5px;
-}
-
-.extensionBody h4 {
-    color: #112A46;
-    margin: 0;
-    padding: 0rem 0.75rem 0.25rem;
-    font-weight: 600;
-    font-size: 0.75rem;
-}
-
-.circularBtn {
-    height: 45px;
-    width: 45px;
-    border-radius: 45px;
-    text-align: center;
-}
-
-.circularBtn::before {
-    content: "";
-    position: absolute;
-    height: 39px;
-    width: 39px;
-    border-radius: 39px;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: -1;
-    background-color: #25252A;
-
-    transition: opacity 300ms ease-in-out;
-    opacity: 0%;
-}
-
-.circularBtn:hover::before,
-.circularBtn:focus::before {
-    opacity: 100%;
-}
-
-/* #activateDemoBtn {
-    position: relative;
-    top: 10px;
-    bottom: -50px;
-    right: 150px;
-}
-
-#deactivateDemoBtn {
-    position: relative;
-    top: 10px;
-    bottom: -50px;
-    left: 150px;
-}
-
-video {
-    position: relative;
-} */
-
-#popup {
-    position: fixed;
-    top: 20px;
-    left: 20px;
     z-index: 1000;
     background-color: aliceblue;
     border-radius: 5px;
@@ -180,14 +11,7 @@ video {
     cursor: move;
 }
 
-#popupText {
-    font-family: "Source Sans Pro", sans-serif;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 5px 10px;
-}
-
-#tooltip {
+.tooltip {
     position: absolute;
     z-index: 1000;
     background-color: aliceblue;
@@ -195,9 +19,10 @@ video {
     padding: 0 10px;
     color: #25252A;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    cursor: move;
 }
 
-#tooltip::after {
+.tooltip::after {
     content: "";
     display: block;
     border: 5px solid;
@@ -207,7 +32,7 @@ video {
     transform: translateX(-50%);
 }
 
-#tooltipText {
+#displayText {
     font-family: "Source Sans Pro", sans-serif;
     font-size: 1rem;
     font-weight: bold;

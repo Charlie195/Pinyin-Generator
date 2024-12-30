@@ -2,8 +2,7 @@
 window.onload = init;
 
 function init() {
-    const openPopupIcon = chrome.runtime.getURL('openPopup.png');
-    const openTooltipIcon = chrome.runtime.getURL('openTooltip.png')
+    const revertIcon = chrome.runtime.getURL('revert.png');
 
     // Setting sessionStorage for activated/deactivated state to default if uninitialized
     if (sessionStorage.getItem("extension state") == null) {
@@ -19,31 +18,18 @@ function init() {
     // String to store transliterated pinyin
     var transliteratedPinyin = "";
 
-    // Creating the popup to display pinyin on highlight
-    const popup = document.createElement("div");
-    popup.innerHTML = `
-        <button id="openTooltipBtn" class="displayBtn">
-            <img class="displayIcon" src=${openTooltipIcon} alt="Open Tooltip Icon" />
-        </button>
-        <div id="popupText">Hello</div>
-    `;
-    popup.setAttribute("id", "popup");
-    container.insertBefore(popup, container.firstChild);
-    popup.hidden = true;    // Initially hidden
-    const openTooltipBtn = document.getElementById("openTooltipBtn");
-
     // Creating the tooltip to display pinyin on highlight
-    const tooltip = document.createElement("div");
-    tooltip.innerHTML = `
-        <button id="openPopupBtn" class="displayBtn">
-            <img class="displayIcon" src=${openPopupIcon} alt="Open Popup Icon" />
+    const display = document.createElement("div");
+    display.innerHTML = `
+        <button id="revertBtn" class="displayBtn" hidden>
+            <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
-        <div id="tooltipText">Hello</div>
+        <div id="displayText">Hello</div>
     `;
-    tooltip.setAttribute("id", "tooltip");
-    container.insertBefore(tooltip, container.firstChild);
-    tooltip.hidden = true;  // Initially hidden
-    const openPopupBtn = document.getElementById("openPopupBtn");
+    display.setAttribute("class", "tooltip");   // Initially set as tooltip mode
+    container.insertBefore(display, container.firstChild);
+    display.hidden = true;  // Initially hidden
+    const revertBtn = document.getElementById("revertBtn");
 
     // Injecting css for extension window
     var cssElement = document.createElement("link");
@@ -52,7 +38,7 @@ function init() {
     document.querySelector("html").appendChild(cssElement);
 
     // Making display element draggable:
-    dragElement(popup);
+    dragElement(display);
 
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -61,6 +47,17 @@ function init() {
         elmnt.onmousedown = dragMouseDown;
 
         function dragMouseDown(e) {
+            // Initial transition to popup mode
+            if (display.getAttribute("class") != "popup") {
+                // Popup mode
+                display.setAttribute("class", "popup");
+                
+                // Take away the scroll offsets from the positioning since the position is now fixed
+                display.style.left = `${parseFloat(display.style.left) - window.scrollX}px`;
+                display.style.top = `${parseFloat(display.style.top) - window.scrollY}px`;
+                revertBtn.hidden = false;
+            }
+
             e = e || window.event;
             e.preventDefault();
             // Get the mouse cursor position at startup:
@@ -91,27 +88,18 @@ function init() {
         }
     }
 
+    // Variables for the positioning of the display
+    var selection, revertLeft, revertTop;
 
-    // Variable for the reference of current display element (popup or tooltip)
-    var display = tooltip;
-
-    // Open extension and extension window when the open button is pressed
-    function openPopup() {
-        popup.hidden = false;
-        tooltip.hidden = true;
-        display = popup;
+    function revert() {
+        // Tooltip mode
+        display.setAttribute("class", "tooltip");
+        display.style.left = revertLeft;
+        display.style.top = revertTop;
+        revertBtn.hidden = true;
     }
 
-    function openTooltip() {
-        popup.hidden = true;
-        tooltip.hidden = false;
-        display = tooltip;
-    }
-
-    openPopupBtn.onclick = openPopup;
-    openTooltipBtn.onclick = openTooltip;
-
-    var selection;
+    revertBtn.onclick = revert;
 
     function displayPinyin() {
         // Reveal the display element
@@ -124,17 +112,22 @@ function init() {
         }
         else {
             // Display the transliteration on the display
-            document.getElementById("popupText").innerHTML = transliteratedPinyin;
-            document.getElementById("tooltipText").innerHTML = transliteratedPinyin;
+            document.getElementById("displayText").innerHTML = transliteratedPinyin;
 
             const rect = selection.getRangeAt(0).getBoundingClientRect();
 
             // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
-            const scrollLeft = window.pageXOffset;
-            const scrollTop = window.pageYOffset;
+            const scrollLeft = window.scrollX;
+            const scrollTop = window.scrollY;
 
-            tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.clientWidth / 2 + scrollLeft}px`;
-            tooltip.style.top = `${rect.top - tooltip.clientHeight - 10 + scrollTop}px`;
+            revertLeft = `${rect.left + rect.width / 2 - display.clientWidth / 2 + scrollLeft}px`;
+            revertTop = `${rect.top - display.clientHeight - 10 + scrollTop}px`;
+
+            // Set update the position of the display if it is in tooltip mode
+            if (display.getAttribute("class") == "tooltip") {
+                display.style.left = revertLeft;
+                display.style.top = revertTop;
+            }
         }
     }
 
