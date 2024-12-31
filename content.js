@@ -26,7 +26,8 @@ function init() {
         </button>
         <div id="displayText">Hello</div>
     `;
-    display.setAttribute("class", "display tooltip hidden");   // Initially set as tooltip mode and hidden
+    display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
+    // display.hidden = true;      // Initially hidden
     container.insertBefore(display, container.firstChild);
     const revertBtn = document.getElementById("revertBtn");
 
@@ -103,15 +104,17 @@ function init() {
     revertBtn.onclick = revert;
 
     function displayPinyin() {
-        // Reveal the display element
-        display.classList.remove("hidden");
+
 
         if (selection.isCollapsed) {
             // Close display when nothing is selected
-            display.classList.add("hidden");
-            return;
+            display.classList.remove("fadeIn");
+            display.classList.add("fadeOut");
         }
         else {
+            display.classList.remove("fadeOut");
+            display.classList.add("fadeIn");
+
             // Display the transliteration on the display
             document.getElementById("displayText").innerHTML = transliteratedPinyin;
 
