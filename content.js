@@ -21,13 +21,12 @@ function init() {
     // Creating the tooltip to display pinyin on highlight
     const display = document.createElement("div");
     display.innerHTML = `
-        <button id="revertBtn" class="displayBtn" hidden>
+        <button id="revertBtn" class="displayBtn fadeOut">
             <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
         <div id="displayText">Hello</div>
     `;
     display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
-    // display.hidden = true;      // Initially hidden
     container.insertBefore(display, container.firstChild);
     const revertBtn = document.getElementById("revertBtn");
 
@@ -56,7 +55,8 @@ function init() {
                 // Take away the scroll offsets from the positioning since the position is now fixed
                 display.style.left = `${parseFloat(display.style.left) - window.scrollX}px`;
                 display.style.top = `${parseFloat(display.style.top) - window.scrollY}px`;
-                revertBtn.hidden = false;
+                revertBtn.classList.remove("fadeOut");
+                revertBtn.classList.add("fadeIn");
             }
 
             e = e || window.event;
@@ -93,12 +93,22 @@ function init() {
     var selection, revertLeft, revertTop;
 
     function revert() {
-        // Tooltip mode
-        display.classList.remove("popup");
-        display.classList.add("tooltip");
-        display.style.left = revertLeft;
-        display.style.top = revertTop;
-        revertBtn.hidden = true;
+        // Fade out and in
+        display.classList.remove("fadeIn");
+        display.classList.add("fadeOut");
+
+        setTimeout(() => {
+            // Change to tooltip mode (this has to be after the animation since the position gets changed to absoulte)
+            display.classList.remove("popup");
+            display.classList.add("tooltip");
+
+            display.style.left = revertLeft;
+            display.style.top = revertTop;
+            display.classList.remove("fadeOut");
+            display.classList.add("fadeIn");
+            revertBtn.classList.remove("fadeIn");
+            revertBtn.classList.add("fadeOut");
+        }, 300);
     }
 
     revertBtn.onclick = revert;
