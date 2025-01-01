@@ -21,7 +21,7 @@ function init() {
     // Creating the tooltip to display pinyin on highlight
     const display = document.createElement("div");
     display.innerHTML = `
-        <button id="revertBtn" class="displayBtn">
+        <button id="revertBtn" class="displayBtn fadeOut">
             <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
         <div id="displayText"></div>
