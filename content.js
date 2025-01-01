@@ -127,26 +127,29 @@ function init() {
             display.classList.add("fadeOut");
         }
         else {
-            display.hidden = false;     // Reveal display from initial hidden state
-            display.classList.remove("fadeOut");
-            display.classList.add("fadeIn");
-
             // Display the transliteration on the display
             document.getElementById("displayText").innerHTML = transliteratedPinyin;
 
-            const rect = selection.getRangeAt(0).getBoundingClientRect();
-
-            // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
-            const scrollLeft = window.scrollX;
-            const scrollTop = window.scrollY;
-
-            revertLeft = `${rect.left + rect.width / 2 - display.clientWidth / 2 + scrollLeft}px`;
-            revertTop = `${rect.top - display.clientHeight - 10 + scrollTop}px`;
-
-            // Set update the position of the display if it is in tooltip mode
-            if (display.classList.contains("tooltip")) {
-                display.style.left = revertLeft;
-                display.style.top = revertTop;
+            // Reveal display if there is transliteratedPinyin
+            if (transliteratedPinyin) {
+                display.hidden = false;     // Reveal display from initial hidden state
+                display.classList.remove("fadeOut");
+                display.classList.add("fadeIn");
+    
+                const rect = selection.getRangeAt(0).getBoundingClientRect();
+    
+                // Adjustments for scrolled amount, since clientWidth and clientHeight is relative to viewport
+                const scrollLeft = window.scrollX;
+                const scrollTop = window.scrollY;
+    
+                revertLeft = `${rect.left + rect.width / 2 - display.clientWidth / 2 + scrollLeft}px`;
+                revertTop = `${rect.top - display.clientHeight - 10 + scrollTop}px`;
+    
+                // Set update the position of the display if it is in tooltip mode
+                if (display.classList.contains("tooltip")) {
+                    display.style.left = revertLeft;
+                    display.style.top = revertTop;
+                }
             }
         }
     }
