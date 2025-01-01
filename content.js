@@ -21,15 +21,16 @@ function init() {
     // Creating the tooltip to display pinyin on highlight
     const display = document.createElement("div");
     display.innerHTML = `
-        <button id="revertBtn" class="displayBtn fadeOut">
+        <button id="revertBtn" class="displayBtn">
             <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
-        <div id="displayText">Pinyin Generator</div>
+        <div id="displayText"></div>
         <div id="tooltipArrowContainer">
             <div id="tooltipArrow"></div>
         </div>
     `;
-    display.setAttribute("class", "display tooltip fadeOut");   // Initially set as tooltip mode and hidden
+    display.hidden = true;      // Initially hidden
+    display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
     container.insertBefore(display, container.firstChild);
     const revertBtn = document.getElementById("revertBtn");
     const tooltipArrowContainer = document.getElementById("tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
@@ -120,14 +121,13 @@ function init() {
     revertBtn.onclick = revert;
 
     function displayPinyin() {
-
-
         if (selection.isCollapsed) {
             // Close display when nothing is selected
             display.classList.remove("fadeIn");
             display.classList.add("fadeOut");
         }
         else {
+            display.hidden = false;     // Reveal display from initial hidden state
             display.classList.remove("fadeOut");
             display.classList.add("fadeIn");
 
