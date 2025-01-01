@@ -24,12 +24,12 @@ function init() {
         <button id="revertBtn" class="displayBtn fadeOut">
             <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
-        <div id="displayText">Hello</div>
+        <div id="displayText">Pinyin Generator</div>
         <div id="tooltipArrowContainer">
             <div id="tooltipArrow"></div>
         </div>
     `;
-    display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
+    display.setAttribute("class", "display tooltip fadeOut");   // Initially set as tooltip mode and hidden
     container.insertBefore(display, container.firstChild);
     const revertBtn = document.getElementById("revertBtn");
     const tooltipArrowContainer = document.getElementById("tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
