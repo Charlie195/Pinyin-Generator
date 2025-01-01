@@ -60,7 +60,7 @@
 
 #displayText {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: clamp(16px, 1.5vw, 1.5rem);
+    font-size: clamp(16px, 1.25vw, 1.5rem);
     font-weight: bold;
     padding: 5px 10px;
 }
