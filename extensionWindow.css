@@ -50,9 +50,7 @@
     position: absolute;
 }
 
-.tooltip::after {
-    content: "";
-    display: block;
+#tooltipArrow {
     border: 5px solid;
     border-color: aliceblue transparent transparent transparent;
     position: absolute;

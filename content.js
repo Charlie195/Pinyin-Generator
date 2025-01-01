@@ -25,10 +25,14 @@ function init() {
             <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
         </button>
         <div id="displayText">Hello</div>
+        <div id="tooltipArrowContainer">
+            <div id="tooltipArrow"></div>
+        </div>
     `;
     display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
     container.insertBefore(display, container.firstChild);
     const revertBtn = document.getElementById("revertBtn");
+    const tooltipArrowContainer = document.getElementById("tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
 
     // Injecting css for extension window
     var cssElement = document.createElement("link");
@@ -57,6 +61,7 @@ function init() {
                 display.style.top = `${parseFloat(display.style.top) - window.scrollY}px`;
                 revertBtn.classList.remove("fadeOut");
                 revertBtn.classList.add("fadeIn");
+                tooltipArrowContainer.classList.add("fadeOut");
             }
 
             e = e || window.event;
@@ -101,6 +106,7 @@ function init() {
             // Change to tooltip mode (this has to be after the animation since the position gets changed to absoulte)
             display.classList.remove("popup");
             display.classList.add("tooltip");
+            tooltipArrowContainer.classList.remove("fadeOut");
 
             display.style.left = revertLeft;
             display.style.top = revertTop;
