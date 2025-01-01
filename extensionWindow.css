@@ -72,6 +72,8 @@
     border: 0;
     position: absolute;
     background-color: rgb(145, 196, 240);
+    margin: 0;
+    padding: 0;
     top: -12px;
     right: -12px;
 }
@@ -81,6 +83,8 @@
     height: 25px;
     object-fit: contain;
     cursor: pointer;
-    margin: auto;
+    margin: 0;
     padding: 0;
+    top: 0;
+    left: 0;
 }
