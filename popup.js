@@ -22,9 +22,11 @@ chrome.storage.local.get((result) => {
 
 // Activating the extension
 function activateExtension() {
-    // Sending message to content script as an update of extension state change
-    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-        chrome.tabs.sendMessage(tabs[0].id, {});
+    // Sending message to content script of all tabs as an update of extension state change
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            chrome.tabs.sendMessage(tab.id, {});
+        });
     });
     chrome.storage.local.set({"activated": true});
 
@@ -36,8 +38,10 @@ function activateExtension() {
 // Deactivating the extension
 function deactivateExtension() {
     // Sending message to content script as an update of extension state change
-    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-        chrome.tabs.sendMessage(tabs[0].id, {});
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            chrome.tabs.sendMessage(tab.id, {});
+        });
     });
     chrome.storage.local.set({"activated": false});
 

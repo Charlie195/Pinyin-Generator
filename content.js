@@ -14,6 +14,7 @@ function init() {
     function run() {
         // Listener to detect when activated state has been changed by popup
         chrome.runtime.onMessage.addListener(() => {
+            console.log("Hey I've changed")
             activated = !activated;   // If the popup changed the state, it must be flipped
             
             // Close any displays
