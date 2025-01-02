@@ -34817,5 +34817,27 @@
     },
     {
         "Pinyin": "low rear portion of cart"
+    },
+
+    //////////// Added ////////////
+    {
+        "Character": "纫",
+        "Pinyin": "rèn"
+    },
+    {
+        "Character": "三",
+        "Pinyin": "sān"
+    },
+    {
+        "Character": "茨",
+        "Pinyin": "cí"
+    },
+    {
+        "Character": "著",
+        "Pinyin": "zhe"
+    },
+    {
+        "Character": "覆",
+        "Pinyin": "fù"
     }
 ];
