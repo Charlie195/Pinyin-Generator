@@ -25,7 +25,10 @@ function activateExtension() {
     // Sending message to content script of all tabs as an update of extension state change
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
-            chrome.tabs.sendMessage(tab.id, {});
+            chrome.tabs.sendMessage(tab.id, {})
+                .catch((error) => {     // Catch error caused by lack of content script in receiving tab
+                    
+                });
         });
     });
     chrome.storage.local.set({"activated": true});
@@ -40,10 +43,15 @@ function deactivateExtension() {
     // Sending message to content script as an update of extension state change
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
-            chrome.tabs.sendMessage(tab.id, {});
+            chrome.tabs.sendMessage(tab.id, {})
+                .catch((error) => {     // Catch error caused by lack of content script in receiving tab
+                    
+                });
         });
     });
     chrome.storage.local.set({"activated": false});
+
+    console.log("aga");
 
     deactivateBtn.hidden = true;
     activateBtn.hidden = false;
