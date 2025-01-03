@@ -1,7 +1,5 @@
-@import url("https://fonts.googleapis.com/css@?family=Source+Sans+Pro:wght@600&display=swap");
-
 .display {
-    z-index: 1000;
+    z-index: 10000;
     background-color: aliceblue;
     border-radius: 5px;
     padding: 0 10px;
@@ -9,7 +7,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     cursor: move;
     opacity: 1;
-    /* transition: opacity 0.3s ease-in-out; */
 }
 
 @keyframes fadeIn {
@@ -60,9 +57,22 @@
 
 #displayText {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 1rem;
+    font-size: clamp(16px, 1.25vw, 1rem);
     font-weight: bold;
     padding: 5px 10px;
+}
+
+/* Container is colourless, it is the one being hovered upon to prevent the animation of the displayBtn from retriggering */
+.displayBtnContainer {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 0;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: -12px;
+    right: -12px;
 }
 
 .displayBtn {
@@ -70,17 +80,33 @@
     height: 25px;
     border-radius: 50%;
     border: 0;
-    position: absolute;
+    position: relative;
     background-color: rgb(145, 196, 240);
-    top: -12px;
-    right: -12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+@keyframes popout {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.2);
+    }
+}
+
+.displayBtnContainer:hover {
+    animation: popout 0.1s forwards;
 }
 
 .displayIcon {
     width: 25px;
     height: 25px;
     object-fit: contain;
-    cursor: pointer;
-    margin: auto;
+    margin: 0;
     padding: 0;
+    top: 0;
+    left: 0;
 }

@@ -64,7 +64,7 @@
     },
     {
         "Character": "了",
-        "Pinyin": "liǎo"
+        "Pinyin": "le"
     },
     {
         "Pinyin": "to finish; particle of completed action"
@@ -372,7 +372,7 @@
     },
     {
         "Character": "还",
-        "Pinyin": "huán"
+        "Pinyin": "hái"
     },
     {
         "Pinyin": "still, yet, also, besides"
@@ -34817,5 +34817,27 @@
     },
     {
         "Pinyin": "low rear portion of cart"
+    },
+
+    //////////// Added ////////////
+    {
+        "Character": "纫",
+        "Pinyin": "rèn"
+    },
+    {
+        "Character": "三",
+        "Pinyin": "sān"
+    },
+    {
+        "Character": "茨",
+        "Pinyin": "cí"
+    },
+    {
+        "Character": "著",
+        "Pinyin": "zhe"
+    },
+    {
+        "Character": "覆",
+        "Pinyin": "fù"
     }
 ];

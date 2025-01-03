@@ -1,6 +1,6 @@
 {
     "name": "Pinyin Generator",
-    "version": "0.0.0.1",
+    "version": "0.0.0.2",
     "manifest_version": 3,
     "content_scripts": [
         {
@@ -9,10 +9,22 @@
             "js": ["content.js", "character-source.js"]
         }
     ],
+    "action": {
+        "default_icon": "Pinyin Generator Icon.png",
+        "default_popup": "popup.html",
+        "default_title": "A popup will come here."
+    },
     "web_accessible_resources": [
         {
           "resources": ["revert.png"],
           "matches": ["<all_urls>"]
         }
+    ],
+    "background": {
+        "service_worker": "service_worker.js",
+        "type": "module"
+    },
+    "permissions": [
+        "storage"
     ]
 }
