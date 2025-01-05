@@ -59,7 +59,7 @@ function init() {
         // Injecting css for extension window
         var cssElement = document.createElement("link");
         cssElement.setAttribute("rel", "stylesheet");
-        cssElement.setAttribute("href", "extensionWindow.css");
+        cssElement.setAttribute("href", chrome.runtime.getURL("extensionWindow.css"));
         document.querySelector("html").appendChild(cssElement);
 
         // Making display element draggable:
