@@ -64,7 +64,7 @@
     },
     {
         "Character": "了",
-        "Pinyin": "liǎo"
+        "Pinyin": "le"
     },
     {
         "Pinyin": "to finish; particle of completed action"
@@ -372,7 +372,7 @@
     },
     {
         "Character": "还",
-        "Pinyin": "huán"
+        "Pinyin": "hái"
     },
     {
         "Pinyin": "still, yet, also, besides"
