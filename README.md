@@ -1,5 +1,6 @@
 # Pinyin Generator Chrome Extension
 ![image](Pinyin%20Generator%20Icon.png)
+![Pinyin Generator Icon](https://github.com/user-attachments/assets/fbfdbdd7-abf0-4c1f-bfea-db9e091dc740)
 
 ## Overview
 
@@ -31,7 +32,7 @@ The Pinyin Generator Chrome Extension is a lightweight tool designed to enhance 
 
 4. The pinyin transliteration will be displayed near the selected characters.
 
-**Watch a [demo](https://youtu.be/a2wCWvYEMiw)**
+**Watch a [demo](https://www.youtube.com/watch?v=zxXfNHmlUfg&ab_channel=PinyinGenerator)**
 
 ## Contributions
 
