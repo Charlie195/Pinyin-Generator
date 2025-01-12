@@ -1,0 +1,35 @@
+body {
+    width: 400px;
+    height: 175px;
+    color: #25252A;
+    background-color: aliceblue;
+}
+
+button {
+    font-weight: bold;
+    font-size: 20px;
+    z-index: 1000;
+    padding: 10px;
+    margin: 20px;
+    transition: color 300ms ease-in-out;
+    color: #25252A;
+    background-color: rgb(145, 196, 240);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    border: 0;
+    border-radius: 5px;
+    position: relative;
+}
+
+@keyframes popout {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+button:hover {
+    animation: popout 0.1s forwards;
+    cursor: pointer;
+}
