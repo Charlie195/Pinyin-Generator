@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 # Install Python
 RUN apt-get update && apt-get install -y python3 python3-pip
 
+## Or
+# RUN apk add python3
+# RUN apk add py3-pip
+
 # Verify Python installation
 RUN python3 --version
 RUN pip3 --version
