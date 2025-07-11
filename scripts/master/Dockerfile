@@ -8,5 +8,17 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y docker-ce-cli
+
+# Install Python
+RUN apt-get update && apt-get install -y python3 python3-pip
+
+## Or
+# RUN apk add python3
+# RUN apk add py3-pip
+
+# Verify Python installation
+RUN python3 --version
+RUN pip3 --version
+
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
