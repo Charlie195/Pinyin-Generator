@@ -1,4 +1,4 @@
-import { pinyin } from "pinyin-pro";
+import { pinyin, customPinyin } from "pinyin-pro";
 
 // Wait for page to load to run script
 if (document.readyState === "loading") {
@@ -19,6 +19,11 @@ function init() {
     });
 
     function run() {
+        // Defining custom pinyin
+        customPinyin({
+            嗯: 'ēn',
+        });
+
         // Listener to detect when activated state has been changed by popup
         chrome.runtime.onMessage.addListener(() => {
             activated = !activated;   // If the popup changed the state, it must be flipped
