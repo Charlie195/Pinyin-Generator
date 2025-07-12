@@ -1,0 +1,17 @@
+{
+  "name": "pinyin-generator",
+  "version": "1.0.0",
+  "description": "![Pinyin Generator Logo](https://github.com/user-attachments/assets/e8d73553-65bf-4a7d-9275-a5bba23ad97e)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@node-rs/jieba": "^1.10.4",
+    "pinyin-pro": "^3.26.0",
+    "vite": "^6.3.5"
+  }
+}

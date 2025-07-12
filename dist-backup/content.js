@@ -1,7 +1,6 @@
-import { pinyin } from "pinyin-pro";
-
 // Wait for page to load to run script
 window.onload = init;
+
 
 function init() {
     // Managing the activated state
@@ -13,12 +12,6 @@ function init() {
     });
 
     function run() {
-        var hey = pinyin('音乐');
-        console.log("hey hey: ", hey);
-
-        var hey1 = pinyin('乐乐');
-        console.log("hey hey: ", hey1);
-
         // Listener to detect when activated state has been changed by popup
         chrome.runtime.onMessage.addListener(() => {
             activated = !activated;   // If the popup changed the state, it must be flipped
@@ -66,7 +59,7 @@ function init() {
         // Injecting css for extension window
         var cssElement = document.createElement("link");
         cssElement.setAttribute("rel", "stylesheet");
-        cssElement.setAttribute("href", "extensionWindow.css");
+        cssElement.setAttribute("href", chrome.runtime.getURL("extensionWindow.css"));
         document.querySelector("html").appendChild(cssElement);
 
         // Making display element draggable:
@@ -212,7 +205,7 @@ function init() {
                 "finishedTransliteration": process // Identifying if there are more characters to transliterate
             };
 
-            // Find index of selectedCharacter in data source
+            // Find index of selectedCharacter in data source yessir
             var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
 
             // Find and return corresponding pinyin to content.js
