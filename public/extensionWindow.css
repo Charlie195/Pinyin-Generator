@@ -10,6 +10,12 @@
     opacity: 1;
 }
 
+.pinyinGenerator-display[hidden] {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
 @keyframes pinyinGenerator-fadeIn {
     from {
         opacity: 0;

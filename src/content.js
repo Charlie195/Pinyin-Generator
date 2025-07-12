@@ -51,12 +51,13 @@ function init() {
                 <div id="pinyinGenerator-tooltipArrow"></div>
             </div>
         `;
-        display.hidden = true;      // Initially hidden
         display.setAttribute("class", "pinyinGenerator-display pinyinGenerator-tooltip");   // Initially set as tooltip mode
         document.body.append(display)   // Append the display to DOM
         const revertBtn = document.getElementById("pinyinGenerator-revertBtn");
         const tooltipArrowContainer = document.getElementById("pinyinGenerator-tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
 
+        display.hidden = true;      // Initially hidden
+        
         // Injecting css for extension window
         var cssElement = document.createElement("link");
         cssElement.setAttribute("rel", "stylesheet");
