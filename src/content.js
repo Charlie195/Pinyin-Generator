@@ -24,8 +24,8 @@ function init() {
             activated = !activated;   // If the popup changed the state, it must be flipped
             
             // Close any displays
-            display.classList.remove("fadeIn");
-            display.classList.add("fadeOut");
+            display.classList.remove("pinyinGenerator-fadeIn");
+            display.classList.add("pinyinGenerator-fadeOut");
         });
 
         const revertIcon = chrome.runtime.getURL('revert.png');
@@ -34,9 +34,6 @@ function init() {
         if (sessionStorage.getItem("extension state") == null) {
             sessionStorage.setItem("extension state", "activated")
         }
-        
-        // // Container of html
-        // const container = document.querySelector("html");
 
         // String to store transliterated pinyin
         var transliteratedPinyin = "";
@@ -44,21 +41,21 @@ function init() {
         // Creating the tooltip to display pinyin on highlight
         const display = document.createElement("div");
         display.innerHTML = `
-            <div id="revertBtnContainer" class="displayBtnContainer">
-                <button id="revertBtn" class="displayBtn fadeOut">
-                    <img class="displayIcon" src=${revertIcon} alt="Open Popup Icon" />
+            <div id="pinyinGenerator-revertBtnContainer" class="pinyinGenerator-displayBtnContainer">
+                <button id="pinyinGenerator-revertBtn" class="pinyinGenerator-displayBtn pinyinGenerator-fadeOut">
+                    <img class="pinyinGenerator-displayIcon" src=${revertIcon} alt="Open Popup Icon" />
                 </button>
             </div>
-            <div id="displayText"></div>
-            <div id="tooltipArrowContainer">
-                <div id="tooltipArrow"></div>
+            <div id="pinyinGenerator-displayText"></div>
+            <div id="pinyinGenerator-tooltipArrowContainer">
+                <div id="pinyinGenerator-tooltipArrow"></div>
             </div>
         `;
         display.hidden = true;      // Initially hidden
-        display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
+        display.setAttribute("class", "pinyinGenerator-display pinyinGenerator-tooltip");   // Initially set as tooltip mode
         document.body.append(display)   // Append the display to DOM
-        const revertBtn = document.getElementById("revertBtn");
-        const tooltipArrowContainer = document.getElementById("tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
+        const revertBtn = document.getElementById("pinyinGenerator-revertBtn");
+        const tooltipArrowContainer = document.getElementById("pinyinGenerator-tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
 
         // Injecting css for extension window
         var cssElement = document.createElement("link");
@@ -77,17 +74,17 @@ function init() {
 
             function dragMouseDown(e) {
                 // Initial transition to popup mode
-                if (display.classList.contains("tooltip")) {
+                if (display.classList.contains("pinyinGenerator-tooltip")) {
                     // Popup mode
-                    display.classList.remove("tooltip");
-                    display.classList.add("popup");
+                    display.classList.remove("pinyinGenerator-tooltip");
+                    display.classList.add("pinyinGenerator-popup");
                     
                     // Take away the scroll offsets from the positioning since the position is now fixed
                     display.style.left = `${parseFloat(display.style.left) - window.scrollX}px`;
                     display.style.top = `${parseFloat(display.style.top) - window.scrollY}px`;
-                    revertBtn.classList.remove("fadeOut");
-                    revertBtn.classList.add("fadeIn");
-                    tooltipArrowContainer.classList.add("fadeOut");
+                    revertBtn.classList.remove("pinyinGenerator-fadeOut");
+                    revertBtn.classList.add("pinyinGenerator-fadeIn");
+                    tooltipArrowContainer.classList.add("pinyinGenerator-fadeOut");
                 }
 
                 e = e || window.event;
@@ -125,21 +122,21 @@ function init() {
 
         function revert() {
             // Fade out and in
-            display.classList.remove("fadeIn");
-            display.classList.add("fadeOut");
+            display.classList.remove("pinyinGenerator-fadeIn");
+            display.classList.add("pinyinGenerator-fadeOut");
 
             setTimeout(() => {
                 // Change to tooltip mode (this has to be after the animation since the position gets changed to absoulte)
-                display.classList.remove("popup");
-                display.classList.add("tooltip");
-                tooltipArrowContainer.classList.remove("fadeOut");
+                display.classList.remove("pinyinGenerator-popup");
+                display.classList.add("pinyinGenerator-tooltip");
+                tooltipArrowContainer.classList.remove("pinyinGenerator-fadeOut");
 
                 display.style.left = revertLeft;
                 display.style.top = revertTop;
-                display.classList.remove("fadeOut");
-                display.classList.add("fadeIn");
-                revertBtn.classList.remove("fadeIn");
-                revertBtn.classList.add("fadeOut");
+                display.classList.remove("pinyinGenerator-fadeOut");
+                display.classList.add("pinyinGenerator-fadeIn");
+                revertBtn.classList.remove("pinyinGenerator-fadeIn");
+                revertBtn.classList.add("pinyinGenerator-fadeOut");
             }, 300);
         }
 
@@ -148,18 +145,18 @@ function init() {
         function displayPinyin() {
             if (selection.isCollapsed) {
                 // Close display when nothing is selected
-                display.classList.remove("fadeIn");
-                display.classList.add("fadeOut");
+                display.classList.remove("pinyinGenerator-fadeIn");
+                display.classList.add("pinyinGenerator-fadeOut");
             }
             else {
                 // Display the transliteration on the display
-                document.getElementById("displayText").innerHTML = transliteratedPinyin;
+                document.getElementById("pinyinGenerator-displayText").innerHTML = transliteratedPinyin;
 
                 // Reveal display if there is transliteratedPinyin
                 if (transliteratedPinyin.trim()) {
                     display.hidden = false;     // Reveal display from initial hidden state
-                    display.classList.remove("fadeOut");
-                    display.classList.add("fadeIn");
+                    display.classList.remove("pinyinGenerator-fadeOut");
+                    display.classList.add("pinyinGenerator-fadeIn");
         
                     const rect = selection.getRangeAt(0).getBoundingClientRect();
         
@@ -171,7 +168,7 @@ function init() {
                     revertTop = `${rect.top - display.clientHeight - 10 + scrollTop}px`;
         
                     // Set update the position of the display if it is in tooltip mode
-                    if (display.classList.contains("tooltip")) {
+                    if (display.classList.contains("pinyinGenerator-tooltip")) {
                         display.style.left = revertLeft;
                         display.style.top = revertTop;
                     }
