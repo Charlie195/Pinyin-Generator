@@ -1,7 +1,13 @@
 import { pinyin } from "pinyin-pro";
 
 // Wait for page to load to run script
-window.onload = init;
+if (document.readyState === "loading") {
+    // The DOM is still loading; wait for the event
+    document.addEventListener("DOMContentLoaded", init);
+} else {
+    // The DOM is ready now, so run immediately
+    init();
+}
 
 function init() {
     // Managing the activated state
@@ -29,8 +35,8 @@ function init() {
             sessionStorage.setItem("extension state", "activated")
         }
         
-        // Container of html
-        const container = document.querySelector("html");
+        // // Container of html
+        // const container = document.querySelector("html");
 
         // String to store transliterated pinyin
         var transliteratedPinyin = "";
@@ -50,7 +56,7 @@ function init() {
         `;
         display.hidden = true;      // Initially hidden
         display.setAttribute("class", "display tooltip");   // Initially set as tooltip mode
-        container.insertBefore(display, container.firstChild);
+        document.body.append(display)   // Append the display to DOM
         const revertBtn = document.getElementById("revertBtn");
         const tooltipArrowContainer = document.getElementById("tooltipArrowContainer"); // Container is necessary to prevent translateX(-50%) of the tooltipArrow from taking effect when adding fadeOut class
 
