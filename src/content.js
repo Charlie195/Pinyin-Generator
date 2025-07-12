@@ -13,12 +13,6 @@ function init() {
     });
 
     function run() {
-        var hey = pinyin('音乐');
-        console.log("hey hey: ", hey);
-
-        var hey1 = pinyin('乐乐');
-        console.log("hey hey: ", hey1);
-
         // Listener to detect when activated state has been changed by popup
         chrome.runtime.onMessage.addListener(() => {
             activated = !activated;   // If the popup changed the state, it must be flipped
@@ -37,9 +31,6 @@ function init() {
         
         // Container of html
         const container = document.querySelector("html");
-
-        // Global variable to store the function reference
-        var receiveText;
 
         // String to store transliterated pinyin
         var transliteratedPinyin = "";
@@ -183,90 +174,20 @@ function init() {
         }
 
         // Assigning a function reference to the receiveText variable
-        receiveText = (eventObj) => {
+        transliterate = (eventObj) => {
             // Only run if extension is activated
             if (activated) {
                 selection = window.getSelection();
                 // Getting highlighted text before possible DOM modifications that would unhighlight the text
                 var selectedText = selection.toString();
     
-                transliteratedPinyin = ""; // Emptying the transliterated pinyin storage
-    
-                // Transliterate through each character of highlighted text
-                for (var i = 0; i < selectedText.length; i++) {
-                    transliterate(selectedText[i], i == selectedText.length - 1);
-                }
-    
+                transliteratedPinyin = pinyin(selectedText, { nonZh: "consecutive" })
+
                 displayPinyin();
             }
         }
 
         // Execute receiveText when the selected text is changed
-        document.addEventListener("selectionchange", receiveText);
-
-
-        function transliterate(character, process) {
-            // Send text as message object to background.js
-            var characterMsg = {
-                "text": character, // Character to transliterate
-                "finishedTransliteration": process // Identifying if there are more characters to transliterate
-            };
-
-            // Find index of selectedCharacter in data source
-            var index = characterSource.findIndex(item => item.Character === characterMsg["text"]);
-
-            // Find and return corresponding pinyin to content.js
-            try {
-                const pinyin = characterSource[index]["Pinyin"];
-
-                var pinyinMsg = {"text": pinyin, 
-                    "isPinyin": true, 
-                    "finishedTransliteration": characterMsg["finishedTransliteration"]
-                };
-            } 
-            catch(err) {
-                var pinyinMsg = {"text": characterMsg["text"], 
-                    "isPinyin": false, 
-                    "finishedTransliteration": characterMsg["finishedTransliteration"]
-                };
-            }
-            finally {
-                appendToDisplayText(pinyinMsg);
-            }
-        }
-
-        // Storing previous character states to format spaces properly
-        var prevWasPinyin;
-        var prevWasPunc;
-
-        // Seperate function to format the pinyin and non-pinyins together for the display
-        function appendToDisplayText(pinyinMsg) {
-            // Adding space between pinyins and non-puncuations
-            if (prevWasPinyin && !pinyinMsg["isPinyin"] && !pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                transliteratedPinyin += " ";
-            }
-            
-            // Adding space between pinyins but not between pinyins and punctuation
-            if (pinyinMsg["isPinyin"] && !prevWasPunc) {
-                transliteratedPinyin += " ";
-                prevWasPinyin = true;
-            }
-            else {
-                prevWasPinyin = false;
-            }
-
-            // Identifying if this character is a punctuation for the next character
-            prevWasPunc = false;
-            if (pinyinMsg["text"].match(/\.|\,|\?|\!|\:|\;|\'|\"|\。|\，|\？|\！|\：|\；|\’|\“| /g)) {
-                prevWasPunc = true;
-            }
-
-            transliteratedPinyin += pinyinMsg["text"]; // Storing each transliterated pinyin to the storage variable
-
-            if (pinyinMsg["finishedTransliteration"]) { // Display the complete transliteration when all characters have been transliterated
-                // displayPinyin();
-                prevWasPinyin = false;
-            }
-        }
+        document.addEventListener("selectionchange", transliterate);
     }
 }
