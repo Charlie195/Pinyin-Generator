@@ -2,20 +2,21 @@ import { pinyin, customPinyin } from "pinyin-pro";
 
 // Wait for page to load to run script
 if (document.readyState === "loading") {
-    console.log("here")
     // The DOM is still loading; wait for the event
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", safeInit);
 } else {
-    console.log("where", document.readyState)
     // The DOM is ready now, so run immediately
+    console.log("finished")
     safeInit();
 }
 
 // Decreasing likeliness for React hydration errors
 function safeInit() {
-    requestIdleCallback(() => {
-        init();
-    });
+    if ("requestIdleCallback" in window) {
+        requestIdleCallback(() => init(), { timeout: 2000 });
+    } else {
+        setTimeout(() => init(), 1000)
+    }
 }
 
 function init() {
@@ -32,8 +33,6 @@ function init() {
         customPinyin({
             背着: 'bēi zhe',
         });
-
-        console.log("murrr")
 
         // Listener to detect when activated state has been changed by popup
         chrome.runtime.onMessage.addListener(() => {
@@ -56,7 +55,6 @@ function init() {
 
         // Creating the tooltip to display pinyin on highlight
         const display = document.createElement("div");
-        console.log("created: ", display)
         display.innerHTML = `
             <div id="pinyinGenerator-revertBtnContainer" class="pinyinGenerator-displayBtnContainer">
                 <button id="pinyinGenerator-revertBtn" class="pinyinGenerator-displayBtn pinyinGenerator-fadeOut">
@@ -69,8 +67,6 @@ function init() {
             </div>
         `;
 
-        console.log("ha ha: ", display)
-        console.log("this too: ", document.getElementById("pinyinGenerator-displayText"))
         display.setAttribute("class", "pinyinGenerator-display pinyinGenerator-tooltip");   // Initially set as tooltip mode
         document.body.append(display)   // Append the display to DOM
         const revertBtn = document.getElementById("pinyinGenerator-revertBtn");
