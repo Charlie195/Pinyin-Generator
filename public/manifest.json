@@ -1,12 +1,18 @@
 {
     "name": "Pinyin Generator",
-    "version": "0.0.0.1",
+    "version": "2.1.0.0",
     "manifest_version": 3,
+    "icons": {
+        "16": "Pinyin Generator Icon.png",
+        "32": "Pinyin Generator Icon.png",
+        "48": "Pinyin Generator Icon.png",
+        "64": "Pinyin Generator Icon.png"
+    },
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
             "css": ["extensionWindow.css"],
-            "js": ["content.js", "character-source.js"]
+            "js": ["content.js"]
         }
     ],
     "action": {
@@ -16,7 +22,7 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["revert.png"],
+          "resources": ["revert.png", "extensionWindow.css"],
           "matches": ["<all_urls>"]
         }
     ],

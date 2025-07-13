@@ -1,1 +1,0 @@
-print("Mr. Chicken")

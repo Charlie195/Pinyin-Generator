@@ -1,5 +1,6 @@
-.display {
-    z-index: 10000;
+.pinyinGenerator-display {
+    all: initial;
+    z-index: 2147483647;
     background-color: aliceblue;
     border-radius: 5px;
     padding: 0 10px;
@@ -9,7 +10,13 @@
     opacity: 1;
 }
 
-@keyframes fadeIn {
+.pinyinGenerator-display[hidden] {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+@keyframes pinyinGenerator-fadeIn {
     from {
         opacity: 0;
         transform: scale(0);
@@ -20,7 +27,7 @@
     }
 }
 
-@keyframes fadeOut {
+@keyframes pinyinGenerator-fadeOut {
     from {
         opacity: 1;
         transform: scale(1);
@@ -31,23 +38,23 @@
     }
 }
 
-.fadeIn { 
-    animation: fadeIn 0.3s forwards;
+.pinyinGenerator-fadeIn { 
+    animation: pinyinGenerator-fadeIn 0.3s forwards;
 }
 
-.fadeOut { 
-    animation: fadeOut 0.3s forwards;
+.pinyinGenerator-fadeOut { 
+    animation: pinyinGenerator-fadeOut 0.3s forwards;
 }
 
-.popup {
+.pinyinGenerator-popup {
     position: fixed;
 }
 
-.tooltip {
+.pinyinGenerator-tooltip {
     position: absolute;
 }
 
-#tooltipArrow {
+#pinyinGenerator-tooltipArrow {
     border: 5px solid;
     border-color: aliceblue transparent transparent transparent;
     position: absolute;
@@ -55,7 +62,7 @@
     transform: translateX(-50%);
 }
 
-#displayText {
+#pinyinGenerator-displayText {
     font-family: "Source Sans Pro", sans-serif;
     font-size: clamp(16px, 1.25vw, 1rem);
     font-weight: bold;
@@ -63,7 +70,7 @@
 }
 
 /* Container is colourless, it is the one being hovered upon to prevent the animation of the displayBtn from retriggering */
-.displayBtnContainer {
+.pinyinGenerator-displayBtnContainer {
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -75,7 +82,7 @@
     right: -12px;
 }
 
-.displayBtn {
+.pinyinGenerator-displayBtn {
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -88,7 +95,7 @@
     cursor: pointer;
 }
 
-@keyframes popout {
+@keyframes pinyinGenerator-popout {
     from {
         transform: scale(1);
     }
@@ -97,11 +104,11 @@
     }
 }
 
-.displayBtnContainer:hover {
-    animation: popout 0.1s forwards;
+.pinyinGenerator-displayBtnContainer:hover {
+    animation: pinyinGenerator-popout 0.1s forwards;
 }
 
-.displayIcon {
+.pinyinGenerator-displayIcon {
     width: 25px;
     height: 25px;
     object-fit: contain;
