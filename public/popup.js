@@ -51,8 +51,6 @@ function deactivateExtension() {
     });
     chrome.storage.local.set({"activated": false});
 
-    console.log("aga");
-
     deactivateBtn.hidden = true;
     activateBtn.hidden = false;
     document.getElementById("extensionStateHeader").innerHTML = "The extension is currently deactivated";
