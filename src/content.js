@@ -6,7 +6,6 @@ if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", safeInit);
 } else {
     // The DOM is ready now, so run immediately
-    console.log("finished")
     safeInit();
 }
 
